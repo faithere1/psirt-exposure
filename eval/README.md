@@ -1,11 +1,11 @@
 # Evaluation
 
-`<backend-model>/rules/` holds draft rules from `netsec-check extract` plus `extraction.json`
+`<backend-model>/rules/` holds draft rules from `psirt-exposure extract` plus `extraction.json`
 (attempts, validation errors and raw model replies). `<backend-model>/report.{md,json}` is the
-output of `netsec-check eval-extraction`. Regenerate the report after changing drafts or labels:
+output of `psirt-exposure eval-extraction`. Regenerate the report after changing drafts or labels:
 
 ```bash
-uv run netsec-check eval-extraction --drafts eval/ollama-foundation-sec-8b-instruct/rules
+uv run psirt-exposure eval-extraction --drafts eval/ollama-foundation-sec-8b-instruct/rules
 ```
 
 ## Phase 4 result: Foundation-Sec-1.1-8B-Instruct (Q4_K_M, Ollama, 2026-10-30)
@@ -59,10 +59,10 @@ with session modules none and the other without, snooping ranges that include VL
 snooping on unlisted platforms, and a device without `show version`.
 
 ```bash
-uv run netsec-check eval-golden                      # reviewed rules -> golden/report.md
-uv run netsec-check eval-golden --rules eval/ollama-foundation-sec-8b-instruct/rules \
+uv run psirt-exposure eval-golden                      # reviewed rules -> golden/report.md
+uv run psirt-exposure eval-golden --rules eval/ollama-foundation-sec-8b-instruct/rules \
   --out eval/ollama-foundation-sec-8b-instruct/golden  # LLM drafts
-uv run netsec-check eval-golden --min-accuracy 1.0   # CI gate: exit 1 below the threshold
+uv run psirt-exposure eval-golden --min-accuracy 1.0   # CI gate: exit 1 below the threshold
 ```
 
 A test fails if `golden/report.md` is stale, so regenerate it after changing rules or cases.

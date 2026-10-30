@@ -20,7 +20,7 @@
 - Fixtures, sample configs and recorded API responses must contain no real data: use documentation
   IP ranges and fake hostnames, passwords, SNMP communities and serial numbers. Never record OAuth
   tokens or `Authorization` headers in fixtures.
-- Python 3.11+, managed with `uv`. Code lives in `src/netsec_check/`, tests in `tests/`.
+- Python 3.11+, managed with `uv`. Code lives in `src/psirt_exposure/`, tests in `tests/`.
 - Before finishing any phase: `uv run ruff check . && uv run ruff format --check . && uv run mypy && uv run pytest`.
 - Matching must stay deterministic; the LLM only extracts rules from advisory text.
 - Tests must run offline (use fixtures in `tests/fixtures/`); live API tests are opt-in.

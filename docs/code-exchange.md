@@ -8,8 +8,8 @@ license) from the GitHub repository.
 
 | Field | Value |
 |-------|-------|
-| Repository | `https://github.com/faithere1/netsec-check-mcp` |
-| Title | netsec-check: am I actually affected by this Cisco PSIRT advisory? |
+| Repository | `https://github.com/faithere1/psirt-exposure` |
+| Title | psirt-exposure: am I actually affected by this Cisco PSIRT advisory? |
 | Short description | Match Cisco PSIRT advisories against IOS XE configs and get a per-device verdict with config evidence; CLI and MCP server. |
 | Language | Python |
 | License | Apache-2.0 |
@@ -22,7 +22,7 @@ license) from the GitHub repository.
 
 Cisco's PSIRT openVuln API says which software versions an advisory affects, but many advisories
 only apply when a specific feature is configured (for example the web UI, Smart Install or SNMP).
-Engineers still read each advisory and check each device by hand. netsec-check pulls advisories and
+Engineers still read each advisory and check each device by hand. psirt-exposure pulls advisories and
 devices (config files or NetBox), turns each advisory's "vulnerable only if..." condition into a
 human-reviewed YAML rule (drafted by a local security LLM), and evaluates the rules
 deterministically against every device. Each device gets `AFFECTED`, `NOT_AFFECTED_FEATURE_DISABLED`,
@@ -36,7 +36,7 @@ priority and mitigation snippets. An MCP server lets AI assistants ask the same 
 - [ ] README has: what it does, demo GIF, architecture, quick start, usage, limitations,
       getting help, contributing, credits, license.
 - [ ] `LICENSE`, `CONTRIBUTING.md`, `SECURITY.md` present.
-- [ ] Fresh clone quick start works (`uv sync && uv run netsec-check check --offline`).
+- [ ] Fresh clone quick start works (`uv sync && uv run psirt-exposure check --offline`).
 - [ ] `gitleaks git --config .gitleaks.toml` over the full history: no leaks.
 - [ ] `pip-audit` on the locked dependencies: no known vulnerabilities.
 - [ ] No real hostnames, IPs, communities, hashes, serials or tokens in samples, fixtures, eval

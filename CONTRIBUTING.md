@@ -20,8 +20,8 @@ says when a Cisco PSIRT advisory applies to a device configuration. Code changes
 ## Development setup
 
 ```bash
-git clone https://github.com/faithere1/netsec-check-mcp
-cd netsec-check-mcp
+git clone https://github.com/faithere1/psirt-exposure
+cd psirt-exposure
 uv sync
 uv run pytest
 ```
@@ -37,7 +37,7 @@ gitleaks git --config .gitleaks.toml --redact      # secret scan over the histor
 
 A rule turns the "vulnerable only if..." part of an advisory into conditions on the running config.
 The format is defined (and documented in its docstring) in
-[`src/netsec_check/rules/model.py`](src/netsec_check/rules/model.py); the JSON Schema is
+[`src/psirt_exposure/rules/model.py`](src/psirt_exposure/rules/model.py); the JSON Schema is
 [`rules/rule.schema.json`](rules/rule.schema.json). [`rules/webui.yaml`](rules/webui.yaml) is a
 short, complete example.
 
@@ -46,7 +46,7 @@ short, complete example.
    and save it unmodified as `tests/fixtures/psirt/<id>.json`. Add an entry with a short `key`
    to `tests/fixtures/psirt/manifest.yaml`. Pick advisories whose exposure depends on a configured
    feature; version-only advisories need no rule.
-2. **Draft the rule** by hand, or with `uv run netsec-check extract` (see the README). LLM drafts
+2. **Draft the rule** by hand, or with `uv run psirt-exposure extract` (see the README). LLM drafts
    land in `eval/<model>/rules/` with `status: draft`.
 3. **Write `rules/<key>.yaml`.**
    - `exposure`: the feature is configured. Quote the advisory's "Vulnerable Products" /
@@ -66,18 +66,18 @@ short, complete example.
    non-obvious). If no sample device exercises the rule, add a small fake config, or extend one.
 6. **Golden set (optional but appreciated).** Add held-out cases to `eval/golden/cases.yaml`.
    Golden devices should be written by someone other than the rule author, and never tuned to
-   make a rule pass. Regenerate the report with `uv run netsec-check eval-golden`.
+   make a rule pass. Regenerate the report with `uv run psirt-exposure eval-golden`.
 7. **Run everything** (the CI command above) and open a pull request that links the advisory and
    explains any judgment calls.
 
 If you change `model.py`, regenerate the schema with
-`PYTHONPATH=src uv run python -m netsec_check.rules` (a test fails if it is stale).
+`PYTHONPATH=src uv run python -m psirt_exposure.rules` (a test fails if it is stale).
 
 ## Reporting a wrong verdict
 
 Open an issue with the advisory ID, the rule key, the expected and actual verdict, and the
 **minimal fake config** that reproduces it. Do not attach real configs. Security issues in
-netsec-check itself go through [SECURITY.md](SECURITY.md), not public issues.
+psirt-exposure itself go through [SECURITY.md](SECURITY.md), not public issues.
 
 ## License
 

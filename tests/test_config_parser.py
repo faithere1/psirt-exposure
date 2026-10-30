@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 import yaml
 
-from netsec_check.config import ShowVersionError, parse_config, parse_show_version
-from netsec_check.inventory import load_device, load_devices
+from psirt_exposure.config import ShowVersionError, parse_config, parse_show_version
+from psirt_exposure.inventory import load_device, load_devices
 
 ROOT = Path(__file__).resolve().parent.parent
 SAMPLES = ROOT / "samples/configs"

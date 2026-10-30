@@ -1,6 +1,6 @@
 """CISA Known Exploited Vulnerabilities (KEV) catalog.
 
-The feed is public JSON; netsec-check only flags rule CVEs that appear in it. A KEV hit does not
+The feed is public JSON; psirt-exposure only flags rule CVEs that appear in it. A KEV hit does not
 change the verdict: it says the CVE is exploited in the wild, so an AFFECTED result is urgent.
 """
 

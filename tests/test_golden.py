@@ -9,11 +9,11 @@ from pathlib import Path
 
 import pytest
 
-from netsec_check import golden
-from netsec_check.cli import main
-from netsec_check.inventory import load_devices
-from netsec_check.psirt import CsafVersionSource
-from netsec_check.rules import load_rules
+from psirt_exposure import golden
+from psirt_exposure.cli import main
+from psirt_exposure.inventory import load_devices
+from psirt_exposure.psirt import CsafVersionSource
+from psirt_exposure.rules import load_rules
 
 ROOT = Path(__file__).resolve().parent.parent
 CASES = ROOT / "eval/golden/cases.yaml"

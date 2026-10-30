@@ -9,7 +9,7 @@ from typing import Any
 
 import httpx
 
-from netsec_check.psirt.openvuln import read_env_file
+from psirt_exposure.psirt.openvuln import read_env_file
 
 URL_ENV = "NETBOX_URL"
 TOKEN_ENV = "NETBOX_TOKEN"

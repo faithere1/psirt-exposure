@@ -13,7 +13,7 @@ from typing import Any
 import httpx
 import pytest
 
-from netsec_check.psirt import (
+from psirt_exposure.psirt import (
     CsafVersionSource,
     OpenVulnClient,
     OpenVulnError,
@@ -24,9 +24,9 @@ from netsec_check.psirt import (
     load_kev,
     normalize_version,
 )
-from netsec_check.psirt.kev import KevError
-from netsec_check.psirt.openvuln import DEFAULT_API_URL, DEFAULT_TOKEN_URL, read_env_file
-from netsec_check.psirt.versions import release_train
+from psirt_exposure.psirt.kev import KevError
+from psirt_exposure.psirt.openvuln import DEFAULT_API_URL, DEFAULT_TOKEN_URL, read_env_file
+from psirt_exposure.psirt.versions import release_train
 
 ROOT = Path(__file__).resolve().parent.parent
 PSIRT = ROOT / "tests/fixtures/psirt"

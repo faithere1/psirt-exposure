@@ -12,9 +12,9 @@ from collections import Counter
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
-from netsec_check.check import CheckResult
-from netsec_check.matcher import Verdict
-from netsec_check.rules import Rule
+from psirt_exposure.check import CheckResult
+from psirt_exposure.matcher import Verdict
+from psirt_exposure.rules import Rule
 
 ADVISORY_URL = (
     "https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/{advisory_id}"
@@ -39,7 +39,7 @@ UPGRADE = (
 class ReportMeta:
     """Header facts; ``sources`` maps a label (e.g. "Versions") to a short description."""
 
-    title: str = "netsec-check report"
+    title: str = "psirt-exposure report"
     generated: str | None = None
     sources: Mapping[str, str] = field(default_factory=dict)
 

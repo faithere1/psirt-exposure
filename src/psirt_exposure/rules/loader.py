@@ -8,7 +8,7 @@ from typing import Any
 
 import yaml
 
-from netsec_check.rules.model import Rule
+from psirt_exposure.rules.model import Rule
 
 
 class RuleLoadError(ValueError):

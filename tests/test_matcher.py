@@ -9,9 +9,9 @@ import pytest
 import yaml
 from pydantic import TypeAdapter
 
-from netsec_check.config import DeviceConfig, DeviceFacts, parse_config
-from netsec_check.inventory import load_devices
-from netsec_check.matcher import (
+from psirt_exposure.config import DeviceConfig, DeviceFacts, parse_config
+from psirt_exposure.inventory import load_devices
+from psirt_exposure.matcher import (
     Evidence,
     Exposure,
     Verdict,
@@ -20,8 +20,8 @@ from netsec_check.matcher import (
     evaluate,
     parse_vlan_list,
 )
-from netsec_check.redact import redact
-from netsec_check.rules import Condition, load_rules
+from psirt_exposure.redact import redact
+from psirt_exposure.rules import Condition, load_rules
 
 ROOT = Path(__file__).resolve().parent.parent
 RULES = load_rules(ROOT / "rules")

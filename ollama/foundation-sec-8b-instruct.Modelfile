@@ -1,4 +1,4 @@
-# Foundation-Sec-1.1-8B-Instruct for netsec-check (default LLM backend).
+# Foundation-Sec-1.1-8B-Instruct for psirt-exposure (default LLM backend).
 #
 # The GGUF on Hugging Face ships without a chat template, so Ollama would send the raw prompt and
 # drop the system message. This Modelfile adds the template from the upstream

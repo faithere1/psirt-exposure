@@ -1,5 +1,9 @@
-# Secrets
+# Secrets (keep only the empty template)
 .env
+.env.*
+!.env.example
+*.pem
+*.key
 
 # Python
 __pycache__/
@@ -20,5 +24,9 @@ dist/
 .idea/
 .vscode/
 
-# watch state (local drift baseline)
+# watch state (local drift baseline; .netsec-check/ is the pre-rename location)
+.psirt-exposure/
 .netsec-check/
+
+# Reports written to the repo root may contain your real device data
+/report.*

@@ -13,8 +13,8 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
-from netsec_check import drift, golden
-from netsec_check.check import (
+from psirt_exposure import drift, golden
+from psirt_exposure.check import (
     CheckResult,
     CheckSetupError,
     json_item,
@@ -25,28 +25,28 @@ from netsec_check.check import (
     select,
     version_source,
 )
-from netsec_check.inventory import Device, load_devices
-from netsec_check.llm import evaluate
-from netsec_check.llm.advisory import load_csaf, load_manifest
-from netsec_check.llm.backends import make_backend
-from netsec_check.llm.extract import extract_rule, rule_to_yaml
-from netsec_check.netbox import TOKEN_ENV, URL_ENV, NetBoxError
-from netsec_check.netbox.seed import seed_netbox
-from netsec_check.psirt import KevCatalog, VersionSource
-from netsec_check.report import ReportMeta, report_html, report_markdown
-from netsec_check.rules import Rule, load_rule, load_rules
+from psirt_exposure.inventory import Device, load_devices
+from psirt_exposure.llm import evaluate
+from psirt_exposure.llm.advisory import load_csaf, load_manifest
+from psirt_exposure.llm.backends import make_backend
+from psirt_exposure.llm.extract import extract_rule, rule_to_yaml
+from psirt_exposure.netbox import TOKEN_ENV, URL_ENV, NetBoxError
+from psirt_exposure.netbox.seed import seed_netbox
+from psirt_exposure.psirt import KevCatalog, VersionSource
+from psirt_exposure.report import ReportMeta, report_html, report_markdown
+from psirt_exposure.rules import Rule, load_rule, load_rules
 
 __all__ = ["CheckResult", "main", "run_check"]
 
 DEFAULT_MANIFEST = "tests/fixtures/psirt/manifest.yaml"
 DEFAULT_ADVISORIES = "tests/fixtures/psirt"
 DEFAULT_GOLDEN = "eval/golden/cases.yaml"
-DEFAULT_STATE = ".netsec-check/watch-state.json"
+DEFAULT_STATE = ".psirt-exposure/watch-state.json"
 COLUMNS = ("DEVICE", "PLATFORM", "VERSION", "RULE", "EXPOSURE", "VERDICT", "KEV")
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="netsec-check", description=__doc__)
+    parser = argparse.ArgumentParser(prog="psirt-exposure", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     check = sub.add_parser("check", help="match advisory rules against device configs")
     _add_source_args(check)
@@ -153,7 +153,7 @@ def _add_source_args(p: argparse.ArgumentParser) -> None:
         "--netbox-filter",
         action="append",
         metavar="KEY=VALUE",
-        help="NetBox device query parameter, e.g. site=netsec-lab (repeatable)",
+        help="NetBox device query parameter, e.g. site=psirt-lab (repeatable)",
     )
     p.add_argument("--rules", type=Path, default=Path("rules"))
     p.add_argument("--device", action="append", help="limit to a device (repeatable)")
@@ -424,7 +424,7 @@ def cmd_eval_golden(args: argparse.Namespace) -> int:
 
 
 def cmd_mcp(args: argparse.Namespace) -> int:
-    from netsec_check.mcp_server import ServerSettings, build_server
+    from psirt_exposure.mcp_server import ServerSettings, build_server
 
     settings = ServerSettings(
         configs=args.configs, rules=args.rules, advisories=args.advisories, env_file=args.env_file

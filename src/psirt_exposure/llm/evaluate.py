@@ -13,9 +13,9 @@ from pathlib import Path
 
 import yaml
 
-from netsec_check.inventory import Device
-from netsec_check.matcher import Exposure, MissingFactsError, config_exposure
-from netsec_check.rules import Rule
+from psirt_exposure.inventory import Device
+from psirt_exposure.matcher import Exposure, MissingFactsError, config_exposure
+from psirt_exposure.rules import Rule
 
 ERROR = "error"
 MISSING = "no-rule"

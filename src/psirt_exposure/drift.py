@@ -15,7 +15,7 @@ from enum import StrEnum
 from pathlib import Path
 from typing import Any
 
-from netsec_check.check import CheckResult
+from psirt_exposure.check import CheckResult
 
 SNAPSHOT_VERSION = 1
 

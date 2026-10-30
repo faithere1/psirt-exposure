@@ -14,13 +14,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from netsec_check.config import parse_show_version
-from netsec_check.inventory import RUNNING_CONFIG, SHOW_VERSION
-from netsec_check.netbox.client import NetBoxClient
-from netsec_check.netbox.inventory import CONFIG_FIELD, VERSION_FIELD
+from psirt_exposure.config import parse_show_version
+from psirt_exposure.inventory import RUNNING_CONFIG, SHOW_VERSION
+from psirt_exposure.netbox.client import NetBoxClient
+from psirt_exposure.netbox.inventory import CONFIG_FIELD, VERSION_FIELD
 
 MANUFACTURER = {"name": "Cisco", "slug": "cisco"}
-SITE = {"name": "netsec-lab", "slug": "netsec-lab", "status": "active"}
+SITE = {"name": "psirt-lab", "slug": "psirt-lab", "status": "active"}
 ROLE = {"name": "Network device", "slug": "network-device", "color": "2196f3"}
 PLATFORM = {"name": "Cisco IOS XE", "slug": "cisco-ios-xe"}
 UNKNOWN_TYPE = "unknown"
@@ -30,7 +30,7 @@ CUSTOM_FIELDS = (
         "label": "Software version",
         "type": "text",
         "object_types": ["dcim.device"],
-        "description": "OS version as printed by 'show version' (netsec-check)",
+        "description": "OS version as printed by 'show version' (psirt-exposure)",
     },
     {
         "name": CONFIG_FIELD,
@@ -38,7 +38,7 @@ CUSTOM_FIELDS = (
         "type": "longtext",
         "object_types": ["dcim.device"],
         "ui_visible": "hidden",
-        "description": "Running configuration (netsec-check)",
+        "description": "Running configuration (psirt-exposure)",
     },
 )
 

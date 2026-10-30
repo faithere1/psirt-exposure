@@ -1,4 +1,4 @@
-"""Build :class:`~netsec_check.inventory.Device` objects from NetBox devices."""
+"""Build :class:`~psirt_exposure.inventory.Device` objects from NetBox devices."""
 
 from __future__ import annotations
 
@@ -7,9 +7,9 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
-from netsec_check.config import DeviceFacts, parse_config
-from netsec_check.inventory import Device
-from netsec_check.netbox.client import NetBoxClient, Params
+from psirt_exposure.config import DeviceFacts, parse_config
+from psirt_exposure.inventory import Device
+from psirt_exposure.netbox.client import NetBoxClient, Params
 
 CONFIG_FIELD = "running_config"
 VERSION_FIELD = "software_version"
@@ -58,5 +58,5 @@ class NetBoxInventory:
 
 
 def load_netbox_devices(client: NetBoxClient, filters: Params | None = None) -> list[Device]:
-    """NetBox counterpart of :func:`netsec_check.inventory.load_devices`, sorted by name."""
+    """NetBox counterpart of :func:`psirt_exposure.inventory.load_devices`, sorted by name."""
     return NetBoxInventory(client, filters or {}).devices()

@@ -12,8 +12,8 @@ import pytest
 import yaml
 from pydantic import ValidationError
 
-from netsec_check.rules import Rule, RuleLoadError, load_rule, load_rules, rule_json_schema
-from netsec_check.rules.model import (
+from psirt_exposure.rules import Rule, RuleLoadError, load_rule, load_rules, rule_json_schema
+from psirt_exposure.rules.model import (
     Block,
     Each,
     Line,
@@ -115,7 +115,7 @@ def test_rule_round_trips_through_json() -> None:
 
 def test_committed_json_schema_is_current() -> None:
     committed = json.loads(SCHEMA_FILE.read_text(encoding="utf-8"))
-    hint = "regenerate: PYTHONPATH=src uv run python -m netsec_check.rules"
+    hint = "regenerate: PYTHONPATH=src uv run python -m psirt_exposure.rules"
     assert committed == rule_json_schema(), hint
 
 

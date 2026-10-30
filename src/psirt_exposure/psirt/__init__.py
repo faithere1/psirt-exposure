@@ -1,13 +1,13 @@
 """Advisory data sources: the PSIRT openVuln API, CSAF documents and the CISA KEV catalog."""
 
-from netsec_check.psirt.kev import KEV_URL, KevCatalog, KevEntry, fetch_kev, load_kev, parse_kev
-from netsec_check.psirt.openvuln import (
+from psirt_exposure.psirt.kev import KEV_URL, KevCatalog, KevEntry, fetch_kev, load_kev, parse_kev
+from psirt_exposure.psirt.openvuln import (
     OpenVulnAdvisory,
     OpenVulnClient,
     OpenVulnError,
     credentials_from_env,
 )
-from netsec_check.psirt.versions import (
+from psirt_exposure.psirt.versions import (
     CsafVersionSource,
     OpenVulnVersionSource,
     VersionSource,

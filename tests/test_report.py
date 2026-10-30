@@ -9,13 +9,13 @@ from pathlib import Path
 
 import pytest
 
-from netsec_check.check import CheckResult, run_check
-from netsec_check.cli import main
-from netsec_check.inventory import load_devices
-from netsec_check.matcher import Verdict
-from netsec_check.psirt import CsafVersionSource, load_kev
-from netsec_check.report import ReportMeta, findings, report_html, report_markdown
-from netsec_check.rules import load_rules
+from psirt_exposure.check import CheckResult, run_check
+from psirt_exposure.cli import main
+from psirt_exposure.inventory import load_devices
+from psirt_exposure.matcher import Verdict
+from psirt_exposure.psirt import CsafVersionSource, load_kev
+from psirt_exposure.report import ReportMeta, findings, report_html, report_markdown
+from psirt_exposure.rules import load_rules
 
 ROOT = Path(__file__).resolve().parent.parent
 RULES = load_rules(ROOT / "rules")
@@ -61,7 +61,7 @@ def test_snippets(results: list[CheckResult]) -> None:
 
 def test_markdown(results: list[CheckResult]) -> None:
     md = report_markdown(results, RULES, ReportMeta(generated="2026-01-01", sources={"KEV": "x"}))
-    assert md.startswith("# netsec-check report\n\nGenerated: 2026-01-01 · KEV: x\n")
+    assert md.startswith("# psirt-exposure report\n\nGenerated: 2026-01-01 · KEV: x\n")
     for verdict, n in _counts(results).items():
         assert f"| {verdict} | {n} |" in md
     assert "### access-sw-01 · webui · AFFECTED" in md
@@ -118,7 +118,7 @@ def test_html_escapes_device_names(results: list[CheckResult]) -> None:
 
 
 @pytest.mark.parametrize(
-    ("fmt", "marker"), [("markdown", "# netsec-check report"), ("html", "<!DOCTYPE html>")]
+    ("fmt", "marker"), [("markdown", "# psirt-exposure report"), ("html", "<!DOCTYPE html>")]
 )
 def test_cli_report(
     fmt: str, marker: str, tmp_path: Path, capsys: pytest.CaptureFixture[str]

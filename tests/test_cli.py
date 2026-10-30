@@ -1,4 +1,4 @@
-"""CLI: netsec-check check (offline sources; live lookups are stubbed or refused)."""
+"""CLI: psirt-exposure check (offline sources; live lookups are stubbed or refused)."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from netsec_check.cli import main
+from psirt_exposure.cli import main
 
 ROOT = Path(__file__).resolve().parent.parent
 KEV_FILE = ROOT / "tests/fixtures/kev/known_exploited_vulnerabilities.json"

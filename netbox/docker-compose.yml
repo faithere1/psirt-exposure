@@ -1,11 +1,11 @@
-# Local NetBox for netsec-check, trimmed from netbox-community/netbox-docker (release 5.1.1).
+# Local NetBox for psirt-exposure, trimmed from netbox-community/netbox-docker (release 5.1.1).
 # One Valkey instance serves both the task queue (db 0) and the cache (db 1); no worker is
-# needed because netsec-check only reads the REST API.
+# needed because psirt-exposure only reads the REST API.
 #
 # Secrets come from the repository's .env (see .env.example), never from this file:
 #   docker compose --env-file .env -f netbox/docker-compose.yml up -d
 # NetBox then listens on http://127.0.0.1:8000 (first start takes a few minutes: migrations).
-name: netsec-netbox
+name: psirt-exposure-netbox
 
 services:
   netbox:

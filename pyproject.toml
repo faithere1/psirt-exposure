@@ -1,5 +1,5 @@
 [project]
-name = "netsec-check"
+name = "psirt-exposure"
 version = "0.0.1"
 description = "Am I actually affected? Match Cisco PSIRT advisories against device configs with evidence."
 readme = "README.md"
@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-netsec-check = "netsec_check.cli:main"
+psirt-exposure = "psirt_exposure.cli:main"
 
 [dependency-groups]
 dev = [
@@ -25,7 +25,7 @@ dev = [
 ]
 
 [tool.uv]
-# ciscoconfparse2 0.9.18 pins dnspython==2.8.0 (CVE-2026-114605, fixed in 2.9.0). netsec-check never
+# ciscoconfparse2 0.9.18 pins dnspython==2.8.0 (CVE-2026-114605, fixed in 2.9.0). psirt-exposure never
 # calls its DNS helpers; drop this override once ciscoconfparse2 relaxes the pin.
 override-dependencies = ["dnspython>=2.9.0"]
 
@@ -34,13 +34,13 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/netsec_check"]
+packages = ["src/psirt_exposure"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
 addopts = "-m 'not live'"
-markers = ["live: talks to the real openVuln API / CISA KEV feed (opt-in, NETSEC_LIVE=1)"]
+markers = ["live: talks to the real openVuln API / CISA KEV feed (opt-in, PSIRT_EXPOSURE_LIVE=1)"]
 
 [tool.ruff]
 line-length = 100

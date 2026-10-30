@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from netsec_check.config import DeviceConfig, DeviceFacts, parse_config, parse_show_version
+from psirt_exposure.config import DeviceConfig, DeviceFacts, parse_config, parse_show_version
 
 RUNNING_CONFIG = "running-config.txt"
 SHOW_VERSION = "show-version.txt"

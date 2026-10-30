@@ -13,8 +13,8 @@ from typing import Any, TypeVar
 import pytest
 from mcp import Client, StdioServerParameters
 
-from netsec_check.cli import main
-from netsec_check.mcp_server import ServerSettings, build_server
+from psirt_exposure.cli import main
+from psirt_exposure.mcp_server import ServerSettings, build_server
 
 ROOT = Path(__file__).resolve().parent.parent
 T = TypeVar("T")
@@ -55,7 +55,7 @@ def test_lists_tools_and_templates(settings: ServerSettings) -> None:
 
     names, uris, instructions = _with_client(settings, go)
     assert names == ["list_devices", "list_rules", "check", "report"]
-    assert uris == ["netsec://rules/{rule_id}"]
+    assert uris == ["psirt-exposure://rules/{rule_id}"]
     assert instructions and "offline" in instructions
 
 
@@ -117,7 +117,7 @@ def test_check_errors(
 
 def test_report_tool(settings: ServerSettings) -> None:
     md = _call(settings, "report", {"devices": ["access-sw-01"]}).content[0].text
-    assert md.startswith("# netsec-check report")
+    assert md.startswith("# psirt-exposure report")
     assert "### access-sw-01 · webui · AFFECTED" in md
     assert "EXAMPLE-RO" not in md
     page = _call(settings, "report", {"format": "html"}).content[0].text
@@ -126,7 +126,7 @@ def test_report_tool(settings: ServerSettings) -> None:
 
 def test_rule_resource(settings: ServerSettings) -> None:
     async def go(client: Client) -> str:
-        res = await client.read_resource("netsec://rules/webui")
+        res = await client.read_resource("psirt-exposure://rules/webui")
         return res.contents[0].text  # type: ignore[union-attr]
 
     text = _with_client(settings, go)
@@ -141,10 +141,10 @@ def test_missing_rules_dir(settings: ServerSettings, tmp_path: Path) -> None:
 
 
 def test_stdio_subprocess(tmp_path: Path) -> None:
-    """The real ``netsec-check mcp`` entry point over stdio, as MCP Inspector launches it."""
+    """The real ``psirt-exposure mcp`` entry point over stdio, as MCP Inspector launches it."""
     params = StdioServerParameters(
         command=sys.executable,
-        args=["-m", "netsec_check.cli", "mcp", "--env-file", str(tmp_path / ".env")],
+        args=["-m", "psirt_exposure.cli", "mcp", "--env-file", str(tmp_path / ".env")],
         env={"PYTHONPATH": str(ROOT / "src"), "PATH": os.environ.get("PATH", "")},
         cwd=ROOT,
     )

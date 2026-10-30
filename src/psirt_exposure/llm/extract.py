@@ -16,10 +16,10 @@ from typing import Any
 import yaml
 from pydantic import Field, ValidationError
 
-from netsec_check.llm.advisory import AdvisoryText
-from netsec_check.llm.backends import Backend, BackendError
-from netsec_check.rules import model as dsl
-from netsec_check.rules.model import (
+from psirt_exposure.llm.advisory import AdvisoryText
+from psirt_exposure.llm.backends import Backend, BackendError
+from psirt_exposure.rules import model as dsl
+from psirt_exposure.rules.model import (
     Condition,
     Mitigation,
     Remediation,

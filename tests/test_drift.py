@@ -8,12 +8,12 @@ from pathlib import Path
 
 import pytest
 
-from netsec_check import drift
-from netsec_check.check import run_check
-from netsec_check.cli import main
-from netsec_check.inventory import load_devices
-from netsec_check.psirt import CsafVersionSource, load_kev
-from netsec_check.rules import load_rules
+from psirt_exposure import drift
+from psirt_exposure.check import run_check
+from psirt_exposure.cli import main
+from psirt_exposure.inventory import load_devices
+from psirt_exposure.psirt import CsafVersionSource, load_kev
+from psirt_exposure.rules import load_rules
 
 ROOT = Path(__file__).resolve().parent.parent
 ADVISORIES = ROOT / "tests/fixtures/psirt"
@@ -163,7 +163,7 @@ def test_cli_watch_loop(
         if len(sleeps) == 1:  # drift appears between run 1 and run 2
             cfg.write_text(cfg.read_text() + "snmp-server community EXAMPLEnew RO\n")
 
-    monkeypatch.setattr("netsec_check.cli.time.sleep", fake_sleep)
+    monkeypatch.setattr("psirt_exposure.cli.time.sleep", fake_sleep)
     assert main(_watch(configs, state, "--interval", "30", "--count", "3")) == 1
     assert sleeps == [30, 30]
     out = capsys.readouterr().out.splitlines()

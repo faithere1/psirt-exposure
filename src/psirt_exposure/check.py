@@ -11,9 +11,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 
-from netsec_check.inventory import Device, load_devices
-from netsec_check.matcher import RuleResult, check_rule
-from netsec_check.netbox import (
+from psirt_exposure.inventory import Device, load_devices
+from psirt_exposure.matcher import RuleResult, check_rule
+from psirt_exposure.netbox import (
     TOKEN_ENV,
     URL_ENV,
     NetBoxClient,
@@ -21,7 +21,7 @@ from netsec_check.netbox import (
     load_netbox_devices,
     netbox_from_env,
 )
-from netsec_check.psirt import (
+from psirt_exposure.psirt import (
     CsafVersionSource,
     KevCatalog,
     KevEntry,
@@ -32,9 +32,9 @@ from netsec_check.psirt import (
     fetch_kev,
     load_kev,
 )
-from netsec_check.psirt.kev import KevError
-from netsec_check.psirt.openvuln import CLIENT_ID_ENV, CLIENT_SECRET_ENV
-from netsec_check.rules import Rule
+from psirt_exposure.psirt.kev import KevError
+from psirt_exposure.psirt.openvuln import CLIENT_ID_ENV, CLIENT_SECRET_ENV
+from psirt_exposure.rules import Rule
 
 VersionKind = Literal["openvuln", "csaf", "none"]
 

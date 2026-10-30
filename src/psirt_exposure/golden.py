@@ -17,11 +17,11 @@ from typing import Any
 
 import yaml
 
-from netsec_check.check import run_check
-from netsec_check.inventory import Device
-from netsec_check.matcher import Exposure, Verdict
-from netsec_check.psirt import VersionSource
-from netsec_check.rules import Rule
+from psirt_exposure.check import run_check
+from psirt_exposure.inventory import Device
+from psirt_exposure.matcher import Exposure, Verdict
+from psirt_exposure.psirt import VersionSource
+from psirt_exposure.rules import Rule
 
 MISSING = "no-rule"
 VERDICTS = tuple(v.value for v in Verdict)

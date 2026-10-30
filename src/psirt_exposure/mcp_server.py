@@ -17,8 +17,8 @@ from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ResourceError, ToolError
 from mcp_types import ToolAnnotations
 
-from netsec_check import __version__
-from netsec_check.check import (
+from psirt_exposure import __version__
+from psirt_exposure.check import (
     CheckResult,
     CheckSetupError,
     VersionKind,
@@ -29,16 +29,16 @@ from netsec_check.check import (
     select,
     version_source,
 )
-from netsec_check.inventory import Device
-from netsec_check.llm.extract import rule_to_yaml
-from netsec_check.report import ReportMeta, report_html, report_markdown
-from netsec_check.rules import Rule, RuleLoadError, load_rules
+from psirt_exposure.inventory import Device
+from psirt_exposure.llm.extract import rule_to_yaml
+from psirt_exposure.report import ReportMeta, report_html, report_markdown
+from psirt_exposure.rules import Rule, RuleLoadError, load_rules
 
 Inventory = Literal["files", "netbox"]
 KevKind = Literal["none", "cisa"]
 
 INSTRUCTIONS = """\
-netsec-check answers "is this Cisco IOS XE device actually affected by this PSIRT advisory?".
+psirt-exposure answers "is this Cisco IOS XE device actually affected by this PSIRT advisory?".
 Each rule checks whether the vulnerable feature is configured; the running version decides
 between AFFECTED and FIXED_VERSION. Start with list_devices / list_rules, then call check for
 verdicts with evidence, or report for a Markdown/HTML report with remediation snippets.
@@ -58,7 +58,7 @@ class ServerSettings:
     env_file: Path = Path(".env")
 
 
-class NetsecTools:
+class ExposureTools:
     """Tool implementations, independent of the MCP transport (and directly testable)."""
 
     def __init__(self, settings: ServerSettings) -> None:
@@ -185,10 +185,10 @@ class NetsecTools:
 
 
 def build_server(settings: ServerSettings | None = None) -> MCPServer:
-    tools = NetsecTools(settings or ServerSettings())
+    tools = ExposureTools(settings or ServerSettings())
     server: MCPServer = MCPServer(
-        name="netsec-check",
-        title="netsec-check: Cisco PSIRT exposure checks",
+        name="psirt-exposure",
+        title="psirt-exposure: Cisco PSIRT exposure checks",
         instructions=INSTRUCTIONS,
         version=__version__,
     )
@@ -200,7 +200,7 @@ def build_server(settings: ServerSettings | None = None) -> MCPServer:
         """List inventory devices with platform (PID) and IOS XE version.
 
         inventory: "files" (sample config directory) or "netbox".
-        netbox_filter: NetBox device query parameters, e.g. {"site": "netsec-lab"}.
+        netbox_filter: NetBox device query parameters, e.g. {"site": "psirt-lab"}.
         """
         return tools.list_devices(inventory, netbox_filter)
 
@@ -246,7 +246,7 @@ def build_server(settings: ServerSettings | None = None) -> MCPServer:
         return tools.report(format, devices, rules, inventory, versions, kev, netbox_filter)
 
     @server.resource(
-        "netsec://rules/{rule_id}",
+        "psirt-exposure://rules/{rule_id}",
         name="rule",
         description="A reviewed rule as YAML (exposure conditions, mitigations, snippets)",
         mime_type="application/yaml",

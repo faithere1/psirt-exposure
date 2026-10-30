@@ -69,7 +69,7 @@ def _opt_str(value: Any) -> str | None:
 
 @dataclass(frozen=True)
 class OpenVulnAdvisory:
-    """The fields of an openVuln advisory record that netsec-check uses."""
+    """The fields of an openVuln advisory record that psirt-exposure uses."""
 
     advisory_id: str
     title: str

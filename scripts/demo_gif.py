@@ -2,7 +2,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["pillow>=11"]
 # ///
-"""Render docs/demo.gif from real netsec-check runs.
+"""Render docs/demo.gif from real psirt-exposure runs.
 
 Run from the repo root:  uv run --with pillow python scripts/demo_gif.py
 
@@ -100,7 +100,7 @@ class Terminal:
 
 def run(cwd: Path, *args: str) -> str:
     env = {**os.environ, "PYTHONPATH": str(ROOT / "src"), "COLUMNS": str(COLS)}
-    code = "import sys; from netsec_check.cli import main; sys.exit(main())"
+    code = "import sys; from psirt_exposure.cli import main; sys.exit(main())"
     proc = subprocess.run(
         [sys.executable, "-c", code, *args],
         cwd=cwd,
@@ -118,19 +118,19 @@ def build(work: Path) -> list[Frame]:
     term.comment("Is edge-rtr-01 affected? Version check + config evidence, fully offline.")
     args = ["check", "--offline", "--device", "edge-rtr-01"]
     args += ["--rule", "ikev2", "--rule", "snmp", "--rule", "webui", "--evidence"]
-    term.type("netsec-check " + " ".join(args))
+    term.type("psirt-exposure " + " ".join(args))
     term.output(run(work, *args), 5500)
 
     term.clear()
     term.comment("Drift watch: save a baseline, change a config, see the new exposure.")
-    term.type("netsec-check watch --offline", 300)
+    term.type("psirt-exposure watch --offline", 300)
     term.output(run(work, "watch", "--offline"), 1500)
     config = work / "samples/configs/edge-rtr-02/running-config.txt"
     line = "snmp-server community EXAMPLE-RW RW"
     term.type(f"echo '{line}' >> samples/configs/edge-rtr-02/running-config.txt", 300)
     with config.open("a") as fh:
         fh.write(line + "\n")
-    term.type("netsec-check watch --offline", 300)
+    term.type("psirt-exposure watch --offline", 300)
     term.output(run(work, "watch", "--offline"), 6000)
     return term.frames
 

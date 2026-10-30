@@ -2,7 +2,7 @@
 
 Every condition evaluates to an ``Outcome``: whether it holds plus the lines that support that
 result (for a true ``line`` the matching lines, for a false ``each`` the lines that broke it, and
-so on). The config-level verdict order is documented in ``netsec_check.rules.model``.
+so on). The config-level verdict order is documented in ``psirt_exposure.rules.model``.
 """
 
 from __future__ import annotations
@@ -12,9 +12,9 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from enum import StrEnum
 
-from netsec_check.config import ConfigLine, DeviceConfig, DeviceFacts
-from netsec_check.redact import redact
-from netsec_check.rules.model import (
+from psirt_exposure.config import ConfigLine, DeviceConfig, DeviceFacts
+from psirt_exposure.redact import redact
+from psirt_exposure.rules.model import (
     AllOf,
     AnyOf,
     Block,

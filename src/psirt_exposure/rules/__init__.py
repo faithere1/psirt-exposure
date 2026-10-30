@@ -1,7 +1,7 @@
 """Rule DSL and loader."""
 
-from netsec_check.rules.loader import RuleLoadError, load_rule, load_rules, rule_json_schema
-from netsec_check.rules.model import (
+from psirt_exposure.rules.loader import RuleLoadError, load_rule, load_rules, rule_json_schema
+from psirt_exposure.rules.model import (
     Condition,
     Mitigation,
     Remediation,

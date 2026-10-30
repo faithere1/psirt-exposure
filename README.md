@@ -1,13 +1,13 @@
-# netsec-check
+# psirt-exposure
 
 **Am I actually affected?** Match Cisco PSIRT security advisories against your real device
 configurations and get a verdict per device, with evidence. Works as a CLI and as an MCP server for
 AI assistants.
 
-[![CI](https://github.com/faithere1/netsec-check-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/faithere1/netsec-check-mcp/actions/workflows/ci.yml)
+[![CI](https://github.com/faithere1/psirt-exposure/actions/workflows/ci.yml/badge.svg)](https://github.com/faithere1/psirt-exposure/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-![netsec-check demo: offline check with evidence, then drift watch](docs/demo.gif)
+![psirt-exposure demo: offline check with evidence, then drift watch](docs/demo.gif)
 
 > Status: pre-1.0. Cisco IOS XE only, with 10 reviewed rules. All sample data in this repository is
 > fake.
@@ -20,7 +20,7 @@ apply when a specific feature is configured (for example `ip http server`). Cisc
 OVAL definitions, so engineers still read every advisory and check every device by hand with `show`
 commands.
 
-## How netsec-check works
+## How psirt-exposure works
 
 1. **Collect**: pull advisories from the PSIRT openVuln API and devices from config files or NetBox.
 2. **Extract**: a security LLM (Cisco Foundation-Sec, run locally) reads the advisory once and turns
@@ -80,11 +80,11 @@ Requirements: Python 3.11+ and [uv](https://docs.astral.sh/uv/). No account or A
 for offline mode.
 
 ```bash
-git clone https://github.com/faithere1/netsec-check-mcp
-cd netsec-check-mcp
+git clone https://github.com/faithere1/psirt-exposure
+cd psirt-exposure
 uv sync
-uv run netsec-check check --offline --evidence                # all sample devices x all rules
-uv run netsec-check check --offline --device edge-rtr-01 --format json
+uv run psirt-exposure check --offline --evidence                # all sample devices x all rules
+uv run psirt-exposure check --offline --device edge-rtr-01 --format json
 ```
 
 Offline mode reads `rules/` and `samples/configs/<hostname>/{running-config,show-version}.txt`.
@@ -98,7 +98,7 @@ Secrets (SNMP communities, passwords, keys) are redacted in the evidence lines.
 
 ```bash
 cp .env.example .env        # then fill in CISCO_CLIENT_ID / CISCO_CLIENT_SECRET
-uv run netsec-check check --evidence
+uv run psirt-exposure check --evidence
 ```
 
 Without `--offline`, `check` asks the PSIRT openVuln API (OAuth2 client credentials from a
@@ -108,7 +108,7 @@ version, one request per distinct version, and flags rule CVEs that are in the
 Mix sources with `--versions openvuln|csaf|none` and `--kev cisa|none|FILE`.
 Only software versions are sent to Cisco; configs never leave the host.
 
-Live smoke tests are opt-in: `NETSEC_LIVE=1 uv run pytest -m live`.
+Live smoke tests are opt-in: `PSIRT_EXPOSURE_LIVE=1 uv run pytest -m live`.
 
 ## NetBox inventory
 
@@ -123,10 +123,10 @@ A local lab with the sample devices (needs Docker, e.g. `brew install colima doc
 docker-compose && colima start`):
 
 ```bash
-uv run python -m netsec_check.netbox.secrets >> .env   # random lab passwords + API token
+uv run python -m psirt_exposure.netbox.secrets >> .env   # random lab passwords + API token
 docker compose --env-file .env -f netbox/docker-compose.yml up -d --wait
-uv run netsec-check netbox-seed                         # idempotent
-uv run netsec-check check --offline --netbox --netbox-filter site=netsec-lab
+uv run psirt-exposure netbox-seed                         # idempotent
+uv run psirt-exposure check --offline --netbox --netbox-filter site=psirt-lab
 ```
 
 NetBox runs on http://127.0.0.1:8000 (user `admin`, password `NETBOX_SUPERUSER_PASSWORD`).
@@ -137,8 +137,8 @@ The compose file is a trimmed copy of
 ## Reports
 
 ```bash
-uv run netsec-check check --offline --format markdown --output report.md
-uv run netsec-check check --offline --format html --output report.html
+uv run psirt-exposure check --offline --format markdown --output report.md
+uv run psirt-exposure check --offline --format html --output report.html
 ```
 
 A report has a verdict summary, a per-device table and one section per `AFFECTED`,
@@ -151,7 +151,7 @@ self-contained (no scripts, no external assets).
 
 ## MCP server
 
-`netsec-check mcp` runs a [Model Context Protocol](https://modelcontextprotocol.io) server over
+`psirt-exposure mcp` runs a [Model Context Protocol](https://modelcontextprotocol.io) server over
 stdio (official `mcp` Python SDK), so an AI assistant can ask "which of my devices are affected?"
 and get deterministic verdicts with evidence.
 
@@ -162,7 +162,7 @@ and get deterministic verdicts with evidence.
 | `check` | One verdict per device and rule, with reason, evidence, runtime checks, KEV |
 | `report` | The Markdown or HTML report described above |
 
-Resource template `netsec://rules/{rule_id}` returns a rule as YAML. Tools accept device and
+Resource template `psirt-exposure://rules/{rule_id}` returns a rule as YAML. Tools accept device and
 rule names, never file paths; the directories are fixed at start-up (`--configs`, `--rules`,
 `--advisories`, `--env-file`). Defaults are offline (`versions="csaf"`, `kev="none"`); a client
 must ask for `versions="openvuln"`, `kev="cisa"` or `inventory="netbox"` explicitly.
@@ -172,9 +172,9 @@ Client configuration (Claude Desktop, Claude Code `.mcp.json`, Cursor, ...):
 ```json
 {
   "mcpServers": {
-    "netsec-check": {
+    "psirt-exposure": {
       "command": "uv",
-      "args": ["run", "--directory", "/path/to/netsec-check-mcp", "netsec-check", "mcp"]
+      "args": ["run", "--directory", "/path/to/psirt-exposure", "psirt-exposure", "mcp"]
     }
   }
 }
@@ -183,8 +183,8 @@ Client configuration (Claude Desktop, Claude Code `.mcp.json`, Cursor, ...):
 Try it with [MCP Inspector](https://github.com/modelcontextprotocol/inspector):
 
 ```bash
-npx @modelcontextprotocol/inspector uv run --directory "$PWD" netsec-check mcp
-npx @modelcontextprotocol/inspector --cli uv run --directory "$PWD" netsec-check mcp \
+npx @modelcontextprotocol/inspector uv run --directory "$PWD" psirt-exposure mcp
+npx @modelcontextprotocol/inspector --cli uv run --directory "$PWD" psirt-exposure mcp \
   --method tools/call --tool-name check --tool-arg only_findings=true
 ```
 
@@ -195,12 +195,12 @@ previous run, so new exposure from a config change, a new device, updated adviso
 data, or a new KEV listing shows up as a change:
 
 ```bash
-uv run netsec-check watch --offline                     # first run saves the baseline
-uv run netsec-check watch --offline                     # later runs print the changes
-uv run netsec-check watch --interval 3600 --count 24    # hourly for a day (live sources)
+uv run psirt-exposure watch --offline                     # first run saves the baseline
+uv run psirt-exposure watch --offline                     # later runs print the changes
+uv run psirt-exposure watch --interval 3600 --count 24    # hourly for a day (live sources)
 ```
 
-The snapshot lives in `.netsec-check/watch-state.json` (`--state`, gitignored) and holds only
+The snapshot lives in `.psirt-exposure/watch-state.json` (`--state`, gitignored) and holds only
 verdicts, exposure, mitigation ids, KEV CVEs and redacted evidence text (no line numbers, so an
 unrelated edit higher up in a config is not reported). Change kinds: `new`, `gone`, `verdict`,
 `evidence`, `kev`. `--format json` prints machine-readable changes. Exit code: 0 no drift,
@@ -208,7 +208,7 @@ unrelated edit higher up in a config is not reported). Change kinds: `new`, `gon
 
 ## Draft rules with an LLM
 
-`netsec-check extract` turns advisory text into a `draft` rule. The model reply is constrained by
+`psirt-exposure extract` turns advisory text into a `draft` rule. The model reply is constrained by
 the rule JSON Schema and then validated like a hand-written rule; invalid replies are retried with
 the validation error. Advisory IDs, CVEs and titles are copied from the advisory, never generated.
 
@@ -217,15 +217,15 @@ Default backend: Foundation-Sec-8B-Instruct on a local Ollama (advisories stay o
 ```bash
 ollama pull hf.co/fdtn-ai/Foundation-Sec-1.1-8B-Instruct-Q4_K_M-GGUF
 ollama create foundation-sec-8b-instruct -f ollama/foundation-sec-8b-instruct.Modelfile
-uv run netsec-check extract                           # all fixture advisories -> eval/<model>/rules/
-uv run netsec-check eval-extraction --drafts eval/ollama-foundation-sec-8b-instruct/rules
+uv run psirt-exposure extract                           # all fixture advisories -> eval/<model>/rules/
+uv run psirt-exposure eval-extraction --drafts eval/ollama-foundation-sec-8b-instruct/rules
 ```
 
 The Modelfile adds the chat template that the published GGUF lacks; without it the system prompt
 is dropped. Any OpenAI-compatible server works too (key read from `OPENAI_API_KEY`):
 
 ```bash
-uv run netsec-check extract --backend openai --model <name> --base-url http://localhost:8000/v1
+uv run psirt-exposure extract --backend openai --model <name> --base-url http://localhost:8000/v1
 ```
 
 Drafts are written under `eval/`, not `rules/`, so `check` ignores them until a human reviews
@@ -235,7 +235,7 @@ writes `report.md` / `report.json` next to the drafts.
 
 ## Evaluation
 
-`uv run netsec-check eval-golden` scores final verdicts on 60 held-out advisory×config pairs
+`uv run psirt-exposure eval-golden` scores final verdicts on 60 held-out advisory×config pairs
 (`eval/golden/`); see [eval/README.md](eval/README.md) for the metrics table and caveats.
 
 ## Limitations
@@ -251,7 +251,7 @@ writes `report.md` / `report.json` next to the drafts.
 - LLM drafts from Foundation-Sec-8B are not good enough to use unreviewed (see the eval report);
   that is why every rule needs `status: reviewed`.
 - No client-side throttling for the openVuln API yet; keep long `watch --interval` runs modest.
-- netsec-check never logs in to devices. Treat its output as triage, not a guarantee; confirm
+- psirt-exposure never logs in to devices. Treat its output as triage, not a guarantee; confirm
   with Cisco's advisory and the Cisco Software Checker.
 
 ## Development
@@ -269,8 +269,8 @@ PSIRT API.
 
 - New rules and fixes: see [CONTRIBUTING.md](CONTRIBUTING.md).
 - Questions, wrong verdicts and feature requests: open a
-  [GitHub issue](https://github.com/faithere1/netsec-check-mcp/issues) (fake configs only).
-- Security problems in netsec-check: see [SECURITY.md](SECURITY.md).
+  [GitHub issue](https://github.com/faithere1/psirt-exposure/issues) (fake configs only).
+- Security problems in psirt-exposure: see [SECURITY.md](SECURITY.md).
 
 ## Credits
 

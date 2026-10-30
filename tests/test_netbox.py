@@ -14,9 +14,9 @@ from urllib.parse import parse_qs, urlsplit
 import httpx
 import pytest
 
-from netsec_check.cli import main, run_check
-from netsec_check.inventory import load_devices
-from netsec_check.netbox import (
+from psirt_exposure.cli import main, run_check
+from psirt_exposure.inventory import load_devices
+from psirt_exposure.netbox import (
     CONFIG_FIELD,
     VERSION_FIELD,
     NetBoxClient,
@@ -25,10 +25,10 @@ from netsec_check.netbox import (
     load_netbox_devices,
     netbox_from_env,
 )
-from netsec_check.netbox.client import auth_header
-from netsec_check.netbox.secrets import lab_secrets
-from netsec_check.netbox.seed import read_seed_devices, seed_netbox, slugify
-from netsec_check.rules import load_rules
+from psirt_exposure.netbox.client import auth_header
+from psirt_exposure.netbox.secrets import lab_secrets
+from psirt_exposure.netbox.seed import read_seed_devices, seed_netbox, slugify
+from psirt_exposure.rules import load_rules
 
 ROOT = Path(__file__).resolve().parent.parent
 CONFIGS = ROOT / "samples/configs"
@@ -180,7 +180,7 @@ def test_device_without_config_is_skipped(seeded: FakeNetBox) -> None:
 
 
 def test_filters_are_passed_through(seeded: FakeNetBox) -> None:
-    assert len(load_netbox_devices(_client(seeded), {"site": "netsec-lab"})) == 8
+    assert len(load_netbox_devices(_client(seeded), {"site": "psirt-lab"})) == 8
     assert load_netbox_devices(_client(seeded), {"site": "elsewhere"}) == []
     names = [d.name for d in load_netbox_devices(_client(seeded), {"name": ["ind-sw-01"]})]
     assert names == ["ind-sw-01"]
@@ -241,12 +241,12 @@ def test_lab_secrets_are_compose_safe() -> None:
 def test_cli_netbox(
     seeded: FakeNetBox, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    monkeypatch.setattr("netsec_check.check.netbox_from_env", lambda env_file: _client(seeded))
+    monkeypatch.setattr("psirt_exposure.check.netbox_from_env", lambda env_file: _client(seeded))
     base = ["check", "--offline", "--rules", str(RULES), "--format", "json"]
     base += ["--advisories", str(ROOT / "tests/fixtures/psirt")]
     assert main([*base, "--configs", str(CONFIGS)]) == 0
     from_files = capsys.readouterr().out
-    assert main([*base, "--netbox", "--netbox-filter", "site=netsec-lab"]) == 0
+    assert main([*base, "--netbox", "--netbox-filter", "site=psirt-lab"]) == 0
     assert capsys.readouterr().out == from_files
 
 
@@ -261,6 +261,6 @@ def test_cli_netbox_errors(
     assert "NETBOX_URL and NETBOX_TOKEN" in capsys.readouterr().err
     assert main(["netbox-seed", *env]) == 2
     empty = _client(FakeNetBox())
-    monkeypatch.setattr("netsec_check.check.netbox_from_env", lambda env_file: empty)
+    monkeypatch.setattr("psirt_exposure.check.netbox_from_env", lambda env_file: empty)
     assert main([*base, "--netbox-filter", "site"]) == 2
     assert "not KEY=VALUE" in capsys.readouterr().err

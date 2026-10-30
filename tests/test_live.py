@@ -1,6 +1,6 @@
 """Live smoke tests against the real openVuln API and CISA KEV feed (opt-in).
 
-Run with ``NETSEC_LIVE=1 uv run pytest -m live``. openVuln tests also need
+Run with ``PSIRT_EXPOSURE_LIVE=1 uv run pytest -m live``. openVuln tests also need
 ``CISCO_CLIENT_ID`` / ``CISCO_CLIENT_SECRET`` in the environment or ``.env``.
 Nothing returned by the API is written to disk.
 """
@@ -12,15 +12,17 @@ from pathlib import Path
 
 import pytest
 
-from netsec_check.cli import main
-from netsec_check.psirt import OpenVulnClient, credentials_from_env, fetch_kev
+from psirt_exposure.cli import main
+from psirt_exposure.psirt import OpenVulnClient, credentials_from_env, fetch_kev
 
 ROOT = Path(__file__).resolve().parent.parent
 WEBUI = "cisco-sa-iosxe-webui-privesc-j22SaA4z"
 
 pytestmark = [
     pytest.mark.live,
-    pytest.mark.skipif(os.environ.get("NETSEC_LIVE") != "1", reason="set NETSEC_LIVE=1"),
+    pytest.mark.skipif(
+        os.environ.get("PSIRT_EXPOSURE_LIVE") != "1", reason="set PSIRT_EXPOSURE_LIVE=1"
+    ),
 ]
 
 
@@ -62,8 +64,8 @@ def test_cli_live(capsys: pytest.CaptureFixture[str], client: OpenVulnClient) ->
 
 
 def test_netbox_matches_file_mode(capsys: pytest.CaptureFixture[str]) -> None:
-    """Needs the local lab: docker compose up + ``netsec-check netbox-seed`` (see README)."""
-    from netsec_check.netbox import netbox_from_env
+    """Needs the local lab: docker compose up + ``psirt-exposure netbox-seed`` (see README)."""
+    from psirt_exposure.netbox import netbox_from_env
 
     if netbox_from_env(ROOT / ".env") is None:
         pytest.skip("no NETBOX_URL / NETBOX_TOKEN")
@@ -71,7 +73,7 @@ def test_netbox_matches_file_mode(capsys: pytest.CaptureFixture[str]) -> None:
     base += ["--advisories", str(ROOT / "tests/fixtures/psirt"), "--env-file", str(ROOT / ".env")]
     assert main([*base, "--configs", str(ROOT / "samples/configs")]) == 0
     from_files = capsys.readouterr().out
-    code = main([*base, "--netbox", "--netbox-filter", "site=netsec-lab"])
+    code = main([*base, "--netbox", "--netbox-filter", "site=psirt-lab"])
     out, err = capsys.readouterr()
     if code == 2 and "cannot reach NetBox" in err:
         pytest.skip("NetBox not reachable")

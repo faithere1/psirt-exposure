@@ -12,17 +12,17 @@ from typing import Any
 import httpx
 import pytest
 
-from netsec_check import cli
-from netsec_check.inventory import load_devices
-from netsec_check.llm import evaluate
-from netsec_check.llm.advisory import load_csaf, load_manifest
-from netsec_check.llm.backends import (
+from psirt_exposure import cli
+from psirt_exposure.inventory import load_devices
+from psirt_exposure.llm import evaluate
+from psirt_exposure.llm.advisory import load_csaf, load_manifest
+from psirt_exposure.llm.backends import (
     BackendError,
     OllamaBackend,
     OpenAICompatibleBackend,
     make_backend,
 )
-from netsec_check.llm.extract import (
+from psirt_exposure.llm.extract import (
     EXAMPLE_RULE,
     ExtractedRule,
     bounded_schema,
@@ -31,7 +31,7 @@ from netsec_check.llm.extract import (
     rule_to_yaml,
     system_prompt,
 )
-from netsec_check.rules import RuleStatus, load_rule, load_rules
+from psirt_exposure.rules import RuleStatus, load_rule, load_rules
 
 ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = ROOT / "tests/fixtures/psirt/manifest.yaml"
@@ -200,11 +200,11 @@ def test_openai_backend_uses_json_schema_and_env_key(monkeypatch: pytest.MonkeyP
         seen["body"] = json.loads(request.content)
         return httpx.Response(200, json={"choices": [{"message": {"content": "{}"}}]})
 
-    monkeypatch.setenv("NETSEC_TEST_KEY", "test-key-not-real")
+    monkeypatch.setenv("PSIRT_EXPOSURE_TEST_KEY", "test-key-not-real")
     backend = OpenAICompatibleBackend(
         model="m",
         base_url="http://llm.invalid/v1",
-        api_key_env="NETSEC_TEST_KEY",
+        api_key_env="PSIRT_EXPOSURE_TEST_KEY",
         client=_client(handler),
     )
     assert backend.generate("s", "u", {"type": "object"}) == "{}"

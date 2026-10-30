@@ -1,5 +1,5 @@
-import netsec_check
+import psirt_exposure
 
 
 def test_package_imports() -> None:
-    assert netsec_check.__version__
+    assert psirt_exposure.__version__

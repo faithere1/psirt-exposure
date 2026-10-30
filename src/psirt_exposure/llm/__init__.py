@@ -1,14 +1,14 @@
 """LLM rule extraction: advisory text -> draft rule (Phase 4) and its accuracy report."""
 
-from netsec_check.llm.advisory import AdvisoryText, advisory_from_csaf, load_csaf, load_manifest
-from netsec_check.llm.backends import (
+from psirt_exposure.llm.advisory import AdvisoryText, advisory_from_csaf, load_csaf, load_manifest
+from psirt_exposure.llm.backends import (
     Backend,
     BackendError,
     OllamaBackend,
     OpenAICompatibleBackend,
     make_backend,
 )
-from netsec_check.llm.extract import ExtractionResult, extract_rule, rule_to_yaml
+from psirt_exposure.llm.extract import ExtractionResult, extract_rule, rule_to_yaml
 
 __all__ = [
     "AdvisoryText",

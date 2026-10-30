@@ -26,7 +26,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol
 
-from netsec_check.psirt.openvuln import OpenVulnClient, OpenVulnError
+from psirt_exposure.psirt.openvuln import OpenVulnClient, OpenVulnError
 
 IOS_XE_FAMILY = "Cisco IOS XE Software"
 _LEADING_ZEROS = re.compile(r"^0+(?=\d)")
