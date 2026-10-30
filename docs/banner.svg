@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="340" viewBox="0 0 1280 340" role="img" aria-labelledby="title desc">
+  <title id="title">psirt-exposure</title>
+  <desc id="desc">Am I actually affected? Cisco PSIRT advisories matched against device configurations, with evidence.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="1" stop-color="#111C33"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.2" r="0.6">
+      <stop offset="0" stop-color="#1D4ED8" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#1D4ED8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#60A5FA"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#FFFFFF" stroke-opacity="0.035" stroke-width="1"/>
+    </pattern>
+    <clipPath id="frame"><rect width="1280" height="340" rx="20"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#frame)">
+    <rect width="1280" height="340" fill="url(#bg)"/>
+    <rect width="1280" height="340" fill="url(#grid)"/>
+    <rect width="1280" height="340" fill="url(#glow)"/>
+  </g>
+
+  <!-- Mark: shield with a check -->
+  <g transform="translate(84 92)">
+    <path d="M36 0 L72 13 V40 C72 62 56 78 36 86 C16 78 0 62 0 40 V13 Z" fill="url(#mark)"/>
+    <path d="M21 43 L32 54 L52 31" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Wordmark and tagline -->
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <text x="182" y="150" fill="#F8FAFC" font-size="54" font-weight="700" letter-spacing="-1">psirt-exposure</text>
+    <text x="84" y="232" fill="#E2E8F0" font-size="26" font-weight="600">Config-aware exposure for Cisco PSIRT advisories</text>
+    <text x="84" y="270" fill="#94A3B8" font-size="19">Versions from openVuln, evidence from your IOS XE configs,</text>
+    <text x="84" y="296" fill="#94A3B8" font-size="19">KEV-first priority. Deterministic, local, read-only.</text>
+  </g>
+
+  <!-- Verdict card -->
+  <g transform="translate(760 62)">
+    <rect width="440" height="216" rx="14" fill="#0F172A" stroke="#1E293B" stroke-width="1.5"/>
+    <circle cx="24" cy="24" r="5.5" fill="#F87171"/>
+    <circle cx="42" cy="24" r="5.5" fill="#FBBF24"/>
+    <circle cx="60" cy="24" r="5.5" fill="#34D399"/>
+    <g font-family="SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace" font-size="15">
+      <text x="24" y="66" fill="#64748B">$ psirt-exposure check</text>
+
+      <text x="24" y="104" fill="#CBD5E1">edge-rtr-01</text>
+      <text x="152" y="104" fill="#94A3B8">snmp</text>
+      <rect x="252" y="87" width="164" height="24" rx="12" fill="#7F1D1D" fill-opacity="0.55"/>
+      <text x="334" y="104" fill="#FCA5A5" text-anchor="middle" font-weight="600">AFFECTED</text>
+
+      <text x="24" y="142" fill="#CBD5E1">edge-rtr-02</text>
+      <text x="152" y="142" fill="#94A3B8">snmp</text>
+      <rect x="252" y="125" width="164" height="24" rx="12" fill="#78350F" fill-opacity="0.55"/>
+      <text x="334" y="142" fill="#FCD34D" text-anchor="middle" font-weight="600">MITIGATED</text>
+
+      <text x="24" y="180" fill="#CBD5E1">access-sw-02</text>
+      <text x="152" y="180" fill="#94A3B8">webui</text>
+      <rect x="252" y="163" width="164" height="24" rx="12" fill="#064E3B" fill-opacity="0.6"/>
+      <text x="334" y="180" fill="#6EE7B7" text-anchor="middle" font-weight="600">NOT AFFECTED</text>
+    </g>
+  </g>
+</svg>

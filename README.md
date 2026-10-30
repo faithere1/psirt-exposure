@@ -1,18 +1,52 @@
-# psirt-exposure: am I actually affected by a Cisco PSIRT advisory?
+<p align="center">
+  <img src="docs/banner.svg" alt="psirt-exposure: config-aware exposure analysis for Cisco PSIRT advisories" width="100%">
+</p>
 
-**psirt-exposure** matches Cisco PSIRT security advisories against your real IOS XE device
-configurations and gives one verdict per device and advisory, with the config lines as evidence.
-It runs as a CLI and as an MCP server for AI assistants.
+<h1 align="center">Am I actually affected by a Cisco PSIRT advisory?</h1>
 
-[![CI](https://github.com/faithere1/psirt-exposure/actions/workflows/ci.yml/badge.svg)](https://github.com/faithere1/psirt-exposure/actions/workflows/ci.yml)
-[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+<p align="center">
+  <a href="https://github.com/faithere1/psirt-exposure/actions/workflows/ci.yml"><img src="https://github.com/faithere1/psirt-exposure/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python 3.11+">
+  <img src="https://img.shields.io/badge/Cisco-IOS%20XE-049FD9?logo=cisco&logoColor=white" alt="Cisco IOS XE">
+  <img src="https://img.shields.io/badge/MCP-server-6E56CF" alt="MCP server">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0"></a>
+</p>
 
-![psirt-exposure demo: offline check with evidence, then drift watch](docs/demo.gif)
+<p align="center">
+  <b>psirt-exposure</b> matches Cisco PSIRT security advisories against your real IOS XE
+  configurations and returns one verdict per device and advisory, together with the config lines
+  that prove it. Use it from the command line, in CI, or from an AI assistant over MCP.
+</p>
 
-- **Technology stack:** Python 3.11+ (standalone CLI and MCP server), uv, ciscoconfparse2,
-  Cisco PSIRT openVuln API, CISA KEV, NetBox (optional), Ollama with Foundation-Sec-8B (optional).
-- **Status:** pre-1.0 (alpha). Cisco IOS XE only, 10 reviewed rules. All sample data in this
-  repository is fake.
+<p align="center">
+  <a href="#use-case">Use case</a> &nbsp;·&nbsp;
+  <a href="#installation">Installation</a> &nbsp;·&nbsp;
+  <a href="#usage">Usage</a> &nbsp;·&nbsp;
+  <a href="#mcp-server">MCP server</a> &nbsp;·&nbsp;
+  <a href="#related-sandbox">Sandbox</a> &nbsp;·&nbsp;
+  <a href="CONTRIBUTING.md">Contributing</a>
+</p>
+
+<table>
+  <tr>
+    <td width="33%" valign="top"><b>Feature-aware</b><br>Checks whether the vulnerable feature is actually enabled, not only whether the version is listed.</td>
+    <td width="33%" valign="top"><b>Evidence for every verdict</b><br>The exact config lines behind each result, with SNMP communities, passwords and keys redacted.</td>
+    <td width="33%" valign="top"><b>Deterministic</b><br>Human-reviewed YAML rules: the same input always gives the same verdict. The LLM only drafts rules.</td>
+  </tr>
+  <tr>
+    <td valign="top"><b>KEV-first</b><br>Findings that are in the CISA Known Exploited Vulnerabilities catalog are flagged first.</td>
+    <td valign="top"><b>Private by design</b><br>Configs never leave the host. Live mode sends only software versions to Cisco.</td>
+    <td valign="top"><b>Built for workflows</b><br>Markdown/HTML reports with fix snippets, NetBox inventory, an MCP server and drift alerts.</td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="docs/demo.gif" alt="psirt-exposure demo: offline check with evidence, then drift watch" width="100%">
+</p>
+
+> **Status:** pre-1.0 (alpha) · Cisco IOS XE · 10 reviewed rules · all sample data in this repository
+> is fake. **Stack:** Python 3.11+ standalone CLI and MCP server, uv, ciscoconfparse2, PSIRT openVuln
+> API, CISA KEV; optional NetBox and Ollama (Foundation-Sec-8B).
 
 ## Use Case
 
