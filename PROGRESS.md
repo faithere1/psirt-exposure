@@ -468,3 +468,15 @@ Status: ☐ not started · ◐ in progress · ☑ done
 - Open: these changes are not committed yet. After pushing: set repo description/topics, enable
   private vulnerability reporting, confirm both CI jobs are green (Windows still untested), then
   submit.
+
+### Publish to GitHub — 2026-10-30
+- Committed the Code Exchange alignment as `211dbb0`; `gitleaks git` over all 3 commits (project
+  config and default rules): no leaks. Pushed `main` to the user's new, empty public repo
+  `https://github.com/faithere1/psirt-exposure` (user asked: "repoyu açtım gerekenleri yap").
+- Repo settings via `gh`: description, 10 topics (see `docs/code-exchange.md`), issues on, wiki
+  off, private vulnerability reporting on, secret scanning + push protection on, Dependabot
+  alerts on, `wrong-verdict` label created (used by the issue form).
+- First CI run: `test` green; `security` failed because `gitleaks/gitleaks-action@v2` scans
+  `<first commit>^..HEAD` on a first push, and the root commit has no parent (git error, 0 bytes
+  scanned, not a leak). Replaced the action with the pinned gitleaks 8.30.1 CLI running
+  `gitleaks git .` over the full history on every run.
