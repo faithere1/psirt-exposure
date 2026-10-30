@@ -42,7 +42,7 @@ psirt-exposure is pre-1.0; only the latest commit on `main` gets security fixes.
 
 - Credentials live only in `.env` (gitignored). The repository is scanned with
   [gitleaks](https://github.com/gitleaks/gitleaks) (`.gitleaks.toml`) over the full history before
-  every push, and dependencies with [pip-audit](https://github.com/pypa/pip-audit):
+  every push and in CI (`security` job), and dependencies with [pip-audit](https://github.com/pypa/pip-audit):
   `uv export --format requirements-txt --no-emit-project > /tmp/req.txt && uvx pip-audit -r /tmp/req.txt --disable-pip`.
 - All sample configs, fixtures and eval devices use documentation IP ranges and fake names,
   hashes, communities and serials. Advisory fixtures are unmodified public Cisco CSAF documents.

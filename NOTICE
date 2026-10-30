@@ -1,0 +1,24 @@
+psirt-exposure
+Copyright 2026 faithere1
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This repository includes or adapts the following third-party material:
+
+- netbox/docker-compose.yml is adapted from netbox-docker
+  (https://github.com/netbox-community/netbox-docker), release 5.1.1,
+  Copyright the netbox-docker contributors, licensed under the Apache License, Version 2.0.
+
+- tests/fixtures/psirt/*.json are unmodified public Cisco Security Advisories in CSAF 2.0 format,
+  Copyright Cisco Systems, Inc., published at https://sec.cloudapps.cisco.com/security/center/.
+  They are included as test fixtures only and remain subject to Cisco's terms for that content.
+
+- tests/fixtures/kev/known_exploited_vulnerabilities.json is a trimmed sample in the format of the
+  CISA Known Exploited Vulnerabilities catalog (https://www.cisa.gov/known-exploited-vulnerabilities-catalog).
+
+- ollama/foundation-sec-8b-instruct.Modelfile contains the chat template from
+  fdtn-ai/Foundation-Sec-1.1-8B-Instruct (https://huggingface.co/fdtn-ai); see the model card for
+  the model's license. The model weights are not included in this repository.
+
+psirt-exposure is not affiliated with or endorsed by Cisco Systems, Inc. Cisco and IOS XE are
+trademarks or registered trademarks of Cisco Systems, Inc.

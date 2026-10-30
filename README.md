@@ -1,26 +1,28 @@
-# psirt-exposure
+# psirt-exposure: am I actually affected by a Cisco PSIRT advisory?
 
-**Am I actually affected?** Match Cisco PSIRT security advisories against your real device
-configurations and get a verdict per device, with evidence. Works as a CLI and as an MCP server for
-AI assistants.
+**psirt-exposure** matches Cisco PSIRT security advisories against your real IOS XE device
+configurations and gives one verdict per device and advisory, with the config lines as evidence.
+It runs as a CLI and as an MCP server for AI assistants.
 
 [![CI](https://github.com/faithere1/psirt-exposure/actions/workflows/ci.yml/badge.svg)](https://github.com/faithere1/psirt-exposure/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 ![psirt-exposure demo: offline check with evidence, then drift watch](docs/demo.gif)
 
-> Status: pre-1.0. Cisco IOS XE only, with 10 reviewed rules. All sample data in this repository is
-> fake.
+- **Technology stack:** Python 3.11+ (standalone CLI and MCP server), uv, ciscoconfparse2,
+  Cisco PSIRT openVuln API, CISA KEV, NetBox (optional), Ollama with Foundation-Sec-8B (optional).
+- **Status:** pre-1.0 (alpha). Cisco IOS XE only, 10 reviewed rules. All sample data in this
+  repository is fake.
 
-## The problem
+## Use Case
 
-The Cisco PSIRT openVuln API tells you which software versions are affected and which are fixed.
-It does not tell you whether the vulnerable *feature* is enabled on your device. Many advisories only
-apply when a specific feature is configured (for example `ip http server`). Cisco no longer publishes
-OVAL definitions, so engineers still read every advisory and check every device by hand with `show`
-commands.
+The Cisco PSIRT openVuln API tells you which software versions an advisory affects and which are
+fixed. It does not tell you whether the vulnerable *feature* is enabled on your device. Many
+advisories only apply when a specific feature is configured (for example `ip http server`), and
+Cisco no longer publishes OVAL definitions, so engineers still read every advisory and check every
+device by hand with `show` commands.
 
-## How psirt-exposure works
+psirt-exposure automates that check:
 
 1. **Collect**: pull advisories from the PSIRT openVuln API and devices from config files or NetBox.
 2. **Extract**: a security LLM (Cisco Foundation-Sec, run locally) reads the advisory once and turns
@@ -37,9 +39,14 @@ commands.
 | `MITIGATED` | Vulnerable, but the advisory's workaround is applied |
 | `INDETERMINATE` | Needs runtime data; the exact `show` command is listed |
 
-Each verdict cites the advisory sentence and the config lines it was based on.
+Each verdict comes with the reason, the config lines it was based on (secrets redacted) and a link to the advisory.
 
-## Architecture
+Outcomes: one triage table instead of reading N advisories × M devices, evidence that a reviewer
+can verify in seconds, KEV-first prioritization, and drift alerts when a config change re-opens an
+exposure. On the 60-pair golden set the reviewed rules get every verdict right (an upper bound,
+see [Known issues](#known-issues)).
+
+### Architecture
 
 ```mermaid
 flowchart LR
@@ -74,17 +81,71 @@ The LLM only turns advisory text into a rule, once, and a human reviews the rule
 uses it. Per-device matching has no LLM in the loop: the same inputs always give the same verdicts.
 Configs never leave the host; in live mode only software versions are sent to Cisco.
 
-## Quick start (offline)
+## Installation
 
-Requirements: Python 3.11+ and [uv](https://docs.astral.sh/uv/). No account or API key is needed
-for offline mode.
+Requirements: Python 3.11+, [git](https://git-scm.com/downloads) and
+[uv](https://docs.astral.sh/uv/getting-started/installation/). uv installs a suitable Python if
+you do not have one. No account or API key is needed for offline mode.
+
+Install uv:
+
+```bash
+# macOS
+brew install uv                                     # or the Linux command below
+# Linux and macOS
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# Windows (PowerShell)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Clone and install:
 
 ```bash
 git clone https://github.com/faithere1/psirt-exposure
 cd psirt-exposure
 uv sync
+uv run psirt-exposure --help
+```
+
+Tested on macOS; CI runs on Linux (Ubuntu). Windows should work with the same `uv` commands but is
+not tested yet.
+
+## Configuration
+
+Offline mode needs no configuration. For live data, copy the template and fill in only what you
+use (`.env` is gitignored; never put credentials anywhere else):
+
+```bash
+cp .env.example .env        # Windows: copy .env.example .env
+```
+
+| Variable | Needed for | Format |
+|----------|------------|--------|
+| `CISCO_CLIENT_ID`, `CISCO_CLIENT_SECRET` | live advisory/version data (`check` without `--offline`) | Client credentials of a free [Cisco API Console](https://apiconsole.cisco.com) app with the PSIRT openVuln API |
+| `NETBOX_URL` | `--netbox` | Base URL with scheme, no `/api` suffix, e.g. `http://127.0.0.1:8000` |
+| `NETBOX_TOKEN` | `--netbox` | NetBox API token: v1 (40 hex chars) or v2 (`nbt_<key>.<secret>`) |
+| `OPENAI_API_KEY` | `extract --backend openai` only | API key of your OpenAI-compatible server |
+| `NETBOX_DB_PASSWORD`, ... | local NetBox lab only | Generated by `uv run python -m psirt_exposure.netbox.secrets >> .env` |
+
+Device data in file mode is one directory per device:
+
+```text
+<configs-dir>/<hostname>/running-config.txt   # output of "show running-config" (required)
+<configs-dir>/<hostname>/show-version.txt     # output of "show version" (recommended: PID + version)
+```
+
+Without `show-version.txt` the version and PID are unknown: a disabled feature still gives
+`NOT_AFFECTED_FEATURE_DISABLED`, but an enabled one (or a rule that needs the platform) gives
+`INDETERMINATE`. Point `--configs` at your own directory; keep real configs outside this repository.
+
+## Usage
+
+### Check devices (offline)
+
+```bash
 uv run psirt-exposure check --offline --evidence                # all sample devices x all rules
 uv run psirt-exposure check --offline --device edge-rtr-01 --format json
+uv run psirt-exposure check --offline --configs ~/my-configs --rule webui --rule snmp
 ```
 
 Offline mode reads `rules/` and `samples/configs/<hostname>/{running-config,show-version}.txt`.
@@ -94,7 +155,7 @@ is fixed if its release train is listed or newer than every listed train; an old
 train (Cisco does not evaluate releases past end of maintenance) is `INDETERMINATE`.
 Secrets (SNMP communities, passwords, keys) are redacted in the evidence lines.
 
-## Live mode (openVuln + CISA KEV)
+### Live mode (openVuln + CISA KEV)
 
 ```bash
 cp .env.example .env        # then fill in CISCO_CLIENT_ID / CISCO_CLIENT_SECRET
@@ -110,7 +171,7 @@ Only software versions are sent to Cisco; configs never leave the host.
 
 Live smoke tests are opt-in: `PSIRT_EXPOSURE_LIVE=1 uv run pytest -m live`.
 
-## NetBox inventory
+### NetBox inventory
 
 `check --netbox` reads devices from NetBox instead of `--configs`: the device type's part number
 (or model) is the PID, and two custom fields on devices hold the data that `show version` and the
@@ -134,7 +195,7 @@ The compose file is a trimmed copy of
 [netbox-docker](https://github.com/netbox-community/netbox-docker); `--offline` still allows
 `--netbox`, because it only concerns advisory and KEV sources.
 
-## Reports
+### Reports
 
 ```bash
 uv run psirt-exposure check --offline --format markdown --output report.md
@@ -149,7 +210,7 @@ applies the advisory's workaround, `remediation.snippet` removes the exposure (f
 `no vstack` or `no ip http server`). `<name>` marks a value to fill in. The HTML file is
 self-contained (no scripts, no external assets).
 
-## MCP server
+### MCP server
 
 `psirt-exposure mcp` runs a [Model Context Protocol](https://modelcontextprotocol.io) server over
 stdio (official `mcp` Python SDK), so an AI assistant can ask "which of my devices are affected?"
@@ -188,7 +249,7 @@ npx @modelcontextprotocol/inspector --cli uv run --directory "$PWD" psirt-exposu
   --method tools/call --tool-name check --tool-arg only_findings=true
 ```
 
-## Drift watch
+### Drift watch
 
 `watch` re-runs `check` (same source options) and compares the result with the snapshot of the
 previous run, so new exposure from a config change, a new device, updated advisory or version
@@ -206,7 +267,7 @@ unrelated edit higher up in a config is not reported). Change kinds: `new`, `gon
 `evidence`, `kev`. `--format json` prints machine-readable changes. Exit code: 0 no drift,
 1 drift in any run (for cron or CI), 2 setup or state-file error.
 
-## Draft rules with an LLM
+### Draft rules with an LLM
 
 `psirt-exposure extract` turns advisory text into a `draft` rule. The model reply is constrained by
 the rule JSON Schema and then validated like a hand-written rule; invalid replies are retried with
@@ -233,12 +294,28 @@ one, sets `status: reviewed` and moves it into `rules/`.
 `eval-extraction` runs drafts and hand rules through the same matcher on the sample devices and
 writes `report.md` / `report.json` next to the drafts.
 
-## Evaluation
+### Evaluation
 
 `uv run psirt-exposure eval-golden` scores final verdicts on 60 held-out advisory×config pairs
 (`eval/golden/`); see [eval/README.md](eval/README.md) for the metrics table and caveats.
 
-## Limitations
+## Related Sandbox
+
+Try psirt-exposure on a real IOS XE device with a free
+[DevNet Sandbox](https://developer.cisco.com/site/sandbox/), for example an always-on or reservable
+IOS XE (Catalyst 8000V) or a Cisco Modeling Labs sandbox:
+
+1. Connect to the device over SSH with the credentials shown on the sandbox page.
+2. Run `terminal length 0`, then `show running-config` and `show version`.
+3. Save the outputs as `~/psirt-lab/<hostname>/running-config.txt` and
+   `~/psirt-lab/<hostname>/show-version.txt` (outside this repository).
+4. Run `uv run psirt-exposure check --offline --configs ~/psirt-lab --evidence`, or drop
+   `--offline` to use live openVuln data.
+
+psirt-exposure only reads the saved text; it never logs in to the device. Sandbox configs contain
+real addresses and shared credentials, so do not commit them or paste them into issues.
+
+## Known issues
 
 - Cisco IOS XE only; NX-OS and ASA are not supported yet (the parser and rule interfaces are kept
   platform-agnostic).
@@ -254,7 +331,29 @@ writes `report.md` / `report.json` next to the drafts.
 - psirt-exposure never logs in to devices. Treat its output as triage, not a guarantee; confirm
   with Cisco's advisory and the Cisco Software Checker.
 
-## Development
+Bugs and wrong verdicts are tracked in [GitHub Issues](https://github.com/faithere1/psirt-exposure/issues);
+use the issue templates and attach a minimal **fake** config, never a real one.
+
+## Getting help
+
+- Questions, wrong verdicts and feature requests: open a
+  [GitHub issue](https://github.com/faithere1/psirt-exposure/issues).
+- Security problems in psirt-exposure: follow [SECURITY.md](SECURITY.md) (private reporting, not
+  a public issue).
+
+## Getting involved
+
+The most useful contributions right now:
+
+- **New rules** for feature-dependent IOS XE advisories (one YAML file plus tests).
+- **Independent golden labels**: devices and expected verdicts written by someone other than the
+  rule author.
+- NX-OS and ASA support, openVuln client-side throttling, reporting advisories that have no rule.
+
+[CONTRIBUTING.md](CONTRIBUTING.md) explains the rule workflow and the no-real-data rules. All
+participants follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+Development checks (the same as CI):
 
 ```bash
 uv sync
@@ -262,17 +361,7 @@ uv run ruff check . && uv run ruff format --check . && uv run mypy && uv run pyt
 uv run --with pillow python scripts/demo_gif.py          # regenerate docs/demo.gif
 ```
 
-Copy `.env.example` to `.env` and add your free Cisco API Console credentials to use the live
-PSIRT API.
-
-## Contributing and getting help
-
-- New rules and fixes: see [CONTRIBUTING.md](CONTRIBUTING.md).
-- Questions, wrong verdicts and feature requests: open a
-  [GitHub issue](https://github.com/faithere1/psirt-exposure/issues) (fake configs only).
-- Security problems in psirt-exposure: see [SECURITY.md](SECURITY.md).
-
-## Credits
+## Credits and references
 
 - Advisory data: [Cisco PSIRT openVuln API](https://developer.cisco.com/psirt/) and public CSAF
   documents; exploited-vulnerability data: [CISA KEV](https://www.cisa.gov/known-exploited-vulnerabilities-catalog).
@@ -281,9 +370,12 @@ PSIRT API.
   via [Ollama](https://ollama.com).
 - MCP: the official [Model Context Protocol Python SDK](https://github.com/modelcontextprotocol/python-sdk).
 - NetBox lab: trimmed from [netbox-docker](https://github.com/netbox-community/netbox-docker).
+- Cisco PSIRT: [Security Vulnerability Policy](https://sec.cloudapps.cisco.com/security/center/resources/security_vulnerability_policy.html)
+  and the [Cisco Software Checker](https://sec.cloudapps.cisco.com/security/center/softwarechecker.x).
 
-Not affiliated with or endorsed by Cisco Systems.
+## Licensing info
 
-## License
+Copyright 2026 faithere1. Licensed under the Apache License 2.0; see [LICENSE](LICENSE) and
+[NOTICE](NOTICE) (third-party attributions).
 
-[Apache-2.0](LICENSE)
+psirt-exposure is not affiliated with or endorsed by Cisco Systems, Inc.

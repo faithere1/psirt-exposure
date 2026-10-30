@@ -5,6 +5,8 @@ says when a Cisco PSIRT advisory applies to a device configuration. Code changes
 
 ## Ground rules
 
+Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 - Everything in the repository is English: code, comments, docs, commit messages, CLI output.
 - **No real data, ever.** Configs, `show version` output, fixtures and reports use documentation IP
   ranges (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`), `example.*` domains and fake

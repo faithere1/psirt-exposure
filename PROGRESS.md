@@ -442,3 +442,29 @@ Status: ☐ not started · ◐ in progress · ☑ done
   state dir, and `/report.*` (root-level reports can contain real device data).
 - Note: commit `201aaf7` carries the author email from the local git config; it becomes public on
   push. Re-run `gitleaks git` right before the first push.
+
+### Code Exchange alignment — 2026-10-30
+- Rename + `.gitignore` hardening committed as `4468ace` (user approved); `gitleaks git` over both
+  commits: no leaks.
+- Checked the official requirements (Code Exchange About page: Cisco-relevant, public on GitHub,
+  OSI license, clear docs; scored 1-10 automatically) and Cisco's repo template
+  (`CiscoDevNet/code-exchange-repo-template/manual-sample-repo`). Details and the remaining
+  checklist are in `docs/code-exchange.md`.
+- README restructured into the template's section order: descriptive title, description,
+  technology stack/status, demo GIF, Use Case (+ architecture), Installation (uv on
+  macOS/Linux/Windows; Windows untested), Configuration (env var table with formats, file-mode
+  layout), Usage (subsections), Related Sandbox (save `show` output from a DevNet IOS XE sandbox,
+  outside the repo), Known issues, Getting help, Getting involved, Credits and references,
+  Licensing info. Two claims corrected: verdicts cite config lines + reason + advisory link (not
+  "the advisory sentence"); without `show-version.txt` only enabled features become INDETERMINATE.
+- Added `NOTICE` (Copyright 2026 faithere1, per the user; attributions for netbox-docker, Cisco
+  CSAF fixtures, KEV sample, Foundation-Sec chat template), `CODE_OF_CONDUCT.md` (Contributor
+  Covenant 2.1 verbatim; contact = maintainer via GitHub private reporting, no email, per the
+  user), issue forms (`wrong-verdict`, `bug-report`, contact links), CI `security` job
+  (gitleaks full history + pip-audit). Workflow and issue forms validated against their JSON
+  schemas.
+- Checks: ruff, ruff format, mypy, pytest green (405 passed); fresh copy OK; gitleaks (default and
+  project config) no leaks; detect-secrets only the known false positives.
+- Open: these changes are not committed yet. After pushing: set repo description/topics, enable
+  private vulnerability reporting, confirm both CI jobs are green (Windows still untested), then
+  submit.

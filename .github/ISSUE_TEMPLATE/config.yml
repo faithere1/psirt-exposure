@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security vulnerability in psirt-exposure
+    url: https://github.com/faithere1/psirt-exposure/security/advisories/new
+    about: Private report to the maintainer. Do not open a public issue.
+  - name: Vulnerability in a Cisco product
+    url: https://sec.cloudapps.cisco.com/security/center/resources/security_vulnerability_policy.html
+    about: Report to Cisco PSIRT, not here.
