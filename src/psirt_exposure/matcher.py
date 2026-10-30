@@ -31,6 +31,8 @@ from psirt_exposure.rules.model import (
 )
 
 _VLAN_LINE_RE = re.compile(r"^vlan (?P<vlans>[\d,-]+)$")
+_VLAN_PART_RE = re.compile(r"(?P<low>\d{1,4})(?:-(?P<high>\d{1,4}))?")
+MAX_VLAN = 4094
 
 
 class Exposure(StrEnum):
@@ -85,14 +87,16 @@ def _merge(*groups: Iterable[Evidence]) -> tuple[Evidence, ...]:
 
 
 def parse_vlan_list(text: str) -> set[int]:
-    """Expand ``10,20-22`` into ``{10, 20, 21, 22}``."""
+    """Expand ``10,20-22`` into ``{10, 20, 21, 22}``; skip malformed or out-of-range parts."""
     vlans: set[int] = set()
     for part in text.split(","):
-        if not part:
+        m = _VLAN_PART_RE.fullmatch(part)
+        if not m:
             continue
-        low, _, high = part.partition("-")
-        start = int(low)
-        vlans.update(range(start, int(high or start) + 1))
+        start = int(m["low"])
+        end = int(m["high"] or start)
+        if 1 <= start <= end <= MAX_VLAN:
+            vlans.update(range(start, end + 1))
     return vlans
 
 

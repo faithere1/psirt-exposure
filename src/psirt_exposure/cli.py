@@ -35,6 +35,7 @@ from psirt_exposure.netbox.seed import seed_netbox
 from psirt_exposure.psirt import KevCatalog, VersionSource
 from psirt_exposure.report import ReportMeta, report_html, report_markdown
 from psirt_exposure.rules import Rule, load_rule, load_rules
+from psirt_exposure.rules.model import KEY_RE
 
 __all__ = ["CheckResult", "main", "run_check"]
 
@@ -208,6 +209,11 @@ def cmd_extract(args: argparse.Namespace) -> int:
         sources = {args.key[0]: args.csaf}
     else:
         sources = _select_map(load_manifest(args.manifest), args.key, "advisory key")
+    for key in sources:
+        if not re.fullmatch(KEY_RE, key):
+            raise SystemExit(
+                f"error: invalid advisory key {key!r} (lowercase letters, digits, '-')"
+            )
     backend = make_backend(args.backend, args.model, args.base_url)
     out: Path = args.out or Path("eval") / slug(backend.name) / "rules"
     out.mkdir(parents=True, exist_ok=True)
@@ -318,7 +324,7 @@ def _load_check(
     args: argparse.Namespace,
 ) -> tuple[list[Device], list[Rule], dict[str, Rule], VersionSource | None, KevCatalog | None]:
     """Selected devices and rules, all rules, version and KEV sources (CheckSetupError)."""
-    all_rules = load_rules(args.rules)
+    all_rules = load_rules(args.rules, reviewed_only=True)
     rules = _select(all_rules, args.rule, "rule")
     all_devices = load_inventory(
         netbox=args.netbox,

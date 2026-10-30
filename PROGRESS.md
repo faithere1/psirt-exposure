@@ -480,3 +480,20 @@ Status: ☐ not started · ◐ in progress · ☑ done
   `<first commit>^..HEAD` on a first push, and the root commit has no parent (git error, 0 bytes
   scanned, not a leak). Replaced the action with the pinned gitleaks 8.30.1 CLI running
   `gitleaks git .` over the full history on every run.
+
+### External security review fixes — 2026-10-30 (partial)
+- Source: Gemini/Antigravity audit report (user-provided, outside the repo). All 7 findings
+  reproduced; the openVuln `csaf()` part of SEC-02 is moot (method unused, no credentials sent).
+- Fixed, with regression tests in `tests/test_security.py`:
+  SEC-01 `redact.py` rewritten (encryption-type digits, `hex`, quoted values, SHA-2 auth,
+  `pre-shared-key address ... key`, mid-line `key`/`key-string`, `snmp-server host` communities);
+  SEC-02 NetBox `next` links pinned to the configured scheme/host under `/api/`, `MAX_PAGES`
+  cap; SEC-03 `parse_vlan_list` validates parts and 1..4094; SEC-04 `load_rules(...,
+  reviewed_only=True)` for check/watch/MCP skips drafts with a stderr warning; SEC-05 `extract`
+  validates keys with `KEY_RE`; SEC-07 configs read with `errors="replace"`, watch state 0600,
+  README says `OPENAI_API_KEY` comes from the shell env; SEC-06 CI `permissions: contents: read`.
+- Checks: ruff, format, mypy, pytest green (432 passed); golden 60/60; gitleaks only `.env`.
+- Resume point (not done): SEC-06 verify gitleaks tarball SHA-256, pin actions to commit SHAs,
+  pin `pip-audit` version; SEC-05 restrict `RuntimeCheck.command` to `^show ` (regenerate
+  `rules/rule.schema.json`; check eval drafts still load); SEC-07 Valkey healthcheck via
+  `REDISCLI_AUTH`. Then push (user wants to review before push).

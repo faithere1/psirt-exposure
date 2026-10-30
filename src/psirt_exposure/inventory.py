@@ -19,11 +19,13 @@ class Device:
 
 
 def load_device(directory: Path) -> Device:
-    config = parse_config((directory / RUNNING_CONFIG).read_text(encoding="utf-8"))
+    config = parse_config(
+        (directory / RUNNING_CONFIG).read_text(encoding="utf-8", errors="replace")
+    )
     version_file = directory / SHOW_VERSION
     facts = None
     if version_file.is_file():
-        facts = parse_show_version(version_file.read_text(encoding="utf-8"))
+        facts = parse_show_version(version_file.read_text(encoding="utf-8", errors="replace"))
     return Device(name=directory.name, config=config, facts=facts)
 
 

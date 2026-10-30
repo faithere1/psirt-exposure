@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
 import yaml
 
-from psirt_exposure.rules.model import Rule
+from psirt_exposure.rules.model import Rule, RuleStatus
 
 
 class RuleLoadError(ValueError):
@@ -32,11 +33,18 @@ def load_rule(path: Path) -> Rule:
     return rule
 
 
-def load_rules(directory: Path) -> dict[str, Rule]:
-    """Load every ``*.yaml`` rule in a directory, keyed by rule id."""
+def load_rules(directory: Path, *, reviewed_only: bool = False) -> dict[str, Rule]:
+    """Load every ``*.yaml`` rule in a directory, keyed by rule id.
+
+    With ``reviewed_only`` (check, watch, MCP), ``status: draft`` rules are skipped with a
+    warning on stderr, so an unreviewed LLM draft never produces verdicts by accident.
+    """
     rules: dict[str, Rule] = {}
     for path in sorted(directory.glob("*.yaml")):
         rule = load_rule(path)
+        if reviewed_only and rule.status is not RuleStatus.REVIEWED:
+            print(f"skipping {path}: status is {rule.status.value}, not reviewed", file=sys.stderr)
+            continue
         rules[rule.id] = rule
     return rules
 

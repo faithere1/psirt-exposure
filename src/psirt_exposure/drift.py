@@ -78,6 +78,7 @@ def save_snapshot(path: Path, snap: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(json.dumps(snap, indent=2) + "\n", encoding="utf-8")
+    tmp.chmod(0o600)  # inventory and exposure data: owner only
     tmp.replace(path)
 
 

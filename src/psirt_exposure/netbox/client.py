@@ -6,6 +6,7 @@ import os
 from collections.abc import Iterator, Mapping, Sequence
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit, urlunsplit
 
 import httpx
 
@@ -15,6 +16,8 @@ URL_ENV = "NETBOX_URL"
 TOKEN_ENV = "NETBOX_TOKEN"
 DEFAULT_TIMEOUT = 30.0
 PAGE_SIZE = 200
+# Upper bound on followed `next` links (200 * 1000 objects), against pagination loops.
+MAX_PAGES = 1000
 
 Params = Mapping[str, str | Sequence[str]]
 
@@ -69,12 +72,30 @@ class NetBoxClient:
         """All objects of a list endpoint, following ``next`` links."""
         url: str | None = self._url(path)
         query: dict[str, Any] | None = {"limit": str(PAGE_SIZE), **(params or {})}
-        while url:
+        for _ in range(MAX_PAGES):
+            if not url:
+                return
             body = self._request("GET", url, params=query)
             if not isinstance(body, dict) or not isinstance(body.get("results"), list):
                 raise NetBoxError(f"unexpected list response from {path}")
             yield from body["results"]
-            url, query = body.get("next"), None  # `next` already carries the query
+            nxt = body.get("next")
+            url, query = (self._same_origin(nxt) if nxt else None), None  # `next` has the query
+        raise NetBoxError(f"more than {MAX_PAGES} pages from {path}; stopping")
+
+    def _same_origin(self, link: object) -> str:
+        """Pin a pagination link to the configured scheme and host.
+
+        The token must only go to ``self.url``. NetBox behind a proxy often returns ``http://``
+        links for an ``https://`` site; using the configured origin avoids a cleartext downgrade,
+        and a link to another host or outside ``/api/`` is refused.
+        """
+        base = urlsplit(self.url)
+        parts = urlsplit(str(link))
+        api = base.path.rstrip("/") + "/api/"
+        if (parts.hostname or base.hostname) != base.hostname or not parts.path.startswith(api):
+            raise NetBoxError("NetBox returned a pagination link outside the configured API")
+        return urlunsplit((base.scheme, base.netloc, parts.path, parts.query, ""))
 
     def create(self, path: str, data: Mapping[str, Any]) -> dict[str, Any]:
         body = self._request("POST", self._url(path), json=data)

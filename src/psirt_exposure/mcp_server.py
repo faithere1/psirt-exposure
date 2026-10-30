@@ -68,7 +68,7 @@ class ExposureTools:
         if not self.settings.rules.is_dir():
             raise ToolError(f"cannot load rules: {self.settings.rules} is not a directory")
         try:
-            return load_rules(self.settings.rules)
+            return load_rules(self.settings.rules, reviewed_only=True)
         except (OSError, RuleLoadError) as exc:
             raise ToolError(f"cannot load rules: {exc}") from None
 
