@@ -1,0 +1,42 @@
+schema_version: 1
+id: nat-dns-alg
+advisory_id: cisco-sa-alg-dos-hbBS7SZE
+cves:
+- CVE-2021-1446
+title: Cisco IOS XE Software DNS NAT Protocol Application Layer Gateway Denial of Service Vulnerability
+status: draft
+os: ios-xe
+summary: A vulnerability in Cisco IOS XE Software's DNS ALG for NAT could allow an unauthenticated, remote
+  attacker to cause a device reload. The feature is enabled as soon as NAT is configured on the device.
+exposure:
+  all_of:
+  - line:
+      pattern: ^ip nat inside
+  - line:
+      pattern: ^ip nat outside
+  - block:
+      parent: '^interface '
+      has:
+      - (^ip nat service dns tcp$)|(^ip nat service dns udp$)
+      lacks: []
+      where:
+        not:
+          line:
+            pattern: ^(no )?ip nat service dns tcp$
+affected_platforms:
+- ^C(isco IOS XE Software)\d+\.\d+\.\d+$
+mitigations:
+- id: disable-dns-alg
+  description: Disable the NAT ALG for DNS packets by configuring 'no ip nat service dns tcp' and 'no
+    ip nat service dns udp'.
+  condition:
+    all_of:
+    - line:
+        pattern: ^no ip nat service dns tcp$
+    - line:
+        pattern: ^no ip nat service dns udp$
+runtime_checks:
+- command: show ip nat statistics
+  description: Lists active NAT translations, indicating if NAT is in use.
+- command: show running-config | include ip nat service dns
+  description: Checks the current state of DNS ALG configuration for NAT.

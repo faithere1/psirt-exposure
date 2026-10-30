@@ -1,0 +1,35 @@
+Building configuration...
+
+Current configuration : 1720 bytes
+!
+version 17.9
+service password-encryption
+hostname gold-ie-01
+!
+enable secret 9 $9$EXAMPLEONLY$NotARealHashForGoldenSetOnly000000000000005
+!
+vlan 50
+ name CELL-A
+!
+interface GigabitEthernet1/1
+ switchport access vlan 50
+ switchport mode access
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan50
+ ip address 192.0.2.130 255.255.255.192
+ cip enable
+!
+iox
+!
+no ip http server
+ip http secure-server
+!
+line vty 0 4
+ login local
+ transport input ssh
+!
+end

@@ -1,0 +1,122 @@
+# Golden eval set: held-out advisory x config pairs with the expected final verdict.
+#
+# The devices in `devices/` were written for this set only; the rules in `rules/` were developed
+# against `samples/configs/`, so this set measures how the rules generalize to configurations
+# they were not tuned on. All addresses, names, serials, keys and hashes are fake.
+#
+# Each case:
+#   device    directory name in `devices/`
+#   rule      advisory key (tests/fixtures/psirt/manifest.yaml)
+#   exposure  expected config-level label (present, absent, mitigated, not_applicable_platform),
+#             or null when it cannot be decided (the rule needs a PID and there is no show version)
+#   verdict   expected final verdict with offline CSAF version data
+#   note      why, for the non-obvious cases
+#
+# Exposure labels are human judgments from the advisory text. The version part of each verdict
+# (AFFECTED vs FIXED_VERSION for a `present` feature) follows the CSAF `known_affected` product
+# lists in tests/fixtures/psirt/, which are Cisco's published data.
+
+devices: devices
+
+cases:
+  # gold-edge-01: C8200-1N-4T, 17.06.04
+  - {device: gold-edge-01, rule: webui, exposure: mitigated, verdict: MITIGATED,
+     note: "Only ip http server is on and its active session modules are none."}
+  - {device: gold-edge-01, rule: smart-install, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED,
+     note: "Router; no Smart Install client."}
+  - {device: gold-edge-01, rule: snmp, exposure: present, verdict: AFFECTED,
+     note: "SNMPv3 group and user; the group has no read view, so it sees every OID."}
+  - {device: gold-edge-01, rule: cip, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-edge-01, rule: ikev1, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED,
+     note: "The only IPsec profile in use sets an IKEv2 profile."}
+  - {device: gold-edge-01, rule: ikev2, exposure: present, verdict: AFFECTED,
+     note: "Tunnel10 uses tunnel protection with IPSEC-HUB, which sets ikev2-profile."}
+  - {device: gold-edge-01, rule: iox, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-edge-01, rule: l2tp, exposure: present, verdict: FIXED_VERSION,
+     note: "xconnect via pseudowire-class PW-L2TP (encapsulation l2tpv3); 17.6.4 is not listed."}
+  - {device: gold-edge-01, rule: nat-dns-alg, exposure: present, verdict: FIXED_VERSION,
+     note: "NVI NAT (ip nat enable); only the UDP DNS ALG is off, so not mitigated."}
+  - {device: gold-edge-01, rule: dhcp-snooping, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED,
+     note: "Snooping VLANs 1-20 cover every configured VLAN (1, 10, 20)."}
+
+  # gold-isr-02: ISR4331/K9, 17.03.04a
+  - {device: gold-isr-02, rule: webui, exposure: present, verdict: AFFECTED,
+     note: "HTTPS session modules are none, but plain ip http server is on with default modules."}
+  - {device: gold-isr-02, rule: smart-install, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-isr-02, rule: snmp, exposure: present, verdict: AFFECTED,
+     note: "One community uses the excluding view, the RW community has no view."}
+  - {device: gold-isr-02, rule: cip, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-isr-02, rule: ikev1, exposure: present, verdict: AFFECTED,
+     note: "CMAP-LEGACY (no ikev2-profile) is applied to Gi0/0/0; ISR 4000 is listed."}
+  - {device: gold-isr-02, rule: ikev2, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED,
+     note: "CMAP-SPARE has an IKEv2 profile but is not applied to any interface."}
+  - {device: gold-isr-02, rule: iox, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-isr-02, rule: l2tp, exposure: present, verdict: AFFECTED,
+     note: "vpdn enable plus a vpdn-group with protocol l2tp (LNS)."}
+  - {device: gold-isr-02, rule: nat-dns-alg, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-isr-02, rule: dhcp-snooping, exposure: not_applicable_platform, verdict: NOT_AFFECTED_FEATURE_DISABLED,
+     note: "Partial coverage (VLAN 10 of 1, 10, 30), but ISR 4000 is not an affected platform."}
+
+  # gold-sw-01: WS-C3650-24TS, 16.12.04
+  - {device: gold-sw-01, rule: webui, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-sw-01, rule: smart-install, exposure: present, verdict: FIXED_VERSION,
+     note: "Catalyst 3650 without no vstack; 16.12 is newer than every train in the 2018 advisory."}
+  - {device: gold-sw-01, rule: snmp, exposure: mitigated, verdict: MITIGATED,
+     note: "The only community reads through a view that excludes cafSessionMethodsInfoEntry."}
+  - {device: gold-sw-01, rule: cip, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-sw-01, rule: ikev1, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-sw-01, rule: ikev2, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-sw-01, rule: iox, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-sw-01, rule: l2tp, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-sw-01, rule: nat-dns-alg, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-sw-01, rule: dhcp-snooping, exposure: not_applicable_platform, verdict: NOT_AFFECTED_FEATURE_DISABLED,
+     note: "VLAN 99 is not snooped (partial), but Catalyst 3650 is not an affected platform."}
+
+  # gold-ie-01: IE-3300-8T2S, 17.09.01
+  - {device: gold-ie-01, rule: webui, exposure: present, verdict: AFFECTED,
+     note: "ip http secure-server alone enables the web UI."}
+  - {device: gold-ie-01, rule: smart-install, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-ie-01, rule: snmp, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-ie-01, rule: cip, exposure: present, verdict: FIXED_VERSION,
+     note: "cip enable on Vlan50; 17.9.1 is not in the advisory's affected list."}
+  - {device: gold-ie-01, rule: ikev1, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-ie-01, rule: ikev2, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-ie-01, rule: iox, exposure: present, verdict: AFFECTED,
+     note: "iox plus ip http secure-server."}
+  - {device: gold-ie-01, rule: l2tp, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-ie-01, rule: nat-dns-alg, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-ie-01, rule: dhcp-snooping, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+
+  # gold-vrtr-02: C8000V, 17.12.01a
+  - {device: gold-vrtr-02, rule: webui, exposure: mitigated, verdict: MITIGATED,
+     note: "Both HTTP servers on, both with session modules none."}
+  - {device: gold-vrtr-02, rule: smart-install, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-vrtr-02, rule: snmp, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED,
+     note: "An SNMPv3 group without any SNMPv3 user and no community: SNMP is not usable."}
+  - {device: gold-vrtr-02, rule: cip, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-vrtr-02, rule: ikev1, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-vrtr-02, rule: ikev2, exposure: present, verdict: AFFECTED,
+     note: "CMAP-CLOUD sets ikev2-profile and is applied to GigabitEthernet1."}
+  - {device: gold-vrtr-02, rule: iox, exposure: present, verdict: AFFECTED,
+     note: "iox plus HTTP servers; web UI session modules do not mitigate the IOx advisory."}
+  - {device: gold-vrtr-02, rule: l2tp, exposure: present, verdict: FIXED_VERSION,
+     note: "Direct xconnect with encapsulation l2tpv3; 17.12.1a is not listed."}
+  - {device: gold-vrtr-02, rule: nat-dns-alg, exposure: mitigated, verdict: MITIGATED,
+     note: "NAT inside/outside, DNS ALG off for both TCP and UDP."}
+  - {device: gold-vrtr-02, rule: dhcp-snooping, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+
+  # gold-cfgonly-03: running config only, no show version (PID and version unknown)
+  - {device: gold-cfgonly-03, rule: webui, exposure: present, verdict: INDETERMINATE,
+     note: "Feature on, version unknown."}
+  - {device: gold-cfgonly-03, rule: smart-install, exposure: null, verdict: INDETERMINATE,
+     note: "Exposure depends on the platform, which is unknown without show version."}
+  - {device: gold-cfgonly-03, rule: snmp, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-cfgonly-03, rule: cip, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-cfgonly-03, rule: ikev1, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED,
+     note: "Feature off, so the unknown platform does not matter."}
+  - {device: gold-cfgonly-03, rule: ikev2, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-cfgonly-03, rule: iox, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-cfgonly-03, rule: l2tp, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}
+  - {device: gold-cfgonly-03, rule: nat-dns-alg, exposure: present, verdict: INDETERMINATE,
+     note: "NAT inside/outside, version unknown."}
+  - {device: gold-cfgonly-03, rule: dhcp-snooping, exposure: absent, verdict: NOT_AFFECTED_FEATURE_DISABLED}

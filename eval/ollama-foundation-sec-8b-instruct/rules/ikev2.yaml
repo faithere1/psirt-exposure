@@ -1,0 +1,43 @@
+schema_version: 1
+id: ikev2
+advisory_id: cisco-sa-asa-ftd-ios-dos-kPEpQGGK
+cves:
+- CVE-2026-20012
+title: Cisco IOS, IOS XE, Secure Firewall Adaptive Security Appliance, and Secure Firewall Threat Defense
+  Software IKEv2 Denial of Service Vulnerability
+status: draft
+os: ios-xe
+summary: A memory leak in IKEv2 processing can lead to a DoS condition. The vulnerability affects Cisco
+  IOS, IOS XE, ASA, and FTD software if the IKEv2 VPN feature is enabled.
+exposure:
+  all_of:
+  - line:
+      pattern: ^crypto ikev2 enable
+  - any_of:
+    - block:
+        parent: '^interface '
+        has:
+        - (^ipsec ipv4 manual-sas|ipv6 manual-sas)
+        lacks: []
+        where:
+          line:
+            pattern: ^crypto map
+    - block:
+        parent: '^access-list '
+        has:
+        - (permit ip|deny ip)
+        lacks: []
+affected_platforms:
+- IOS
+- IOS XE
+- ASA
+- FTD
+runtime_checks:
+- command: show ip socket | include 500
+  description: Checks if UDP port 500 is open, indicating IKE processing.
+- command: show udp | include 500
+  description: Lists listening ports for IKE packets (UDP 500 or 4500).
+- command: show crypto map
+  description: Lists configured crypto maps and their associated IKEv2 profiles.
+- command: show running-config crypto ikev2 | include enable
+  description: Checks if IKEv2 is enabled globally or on specific interfaces.

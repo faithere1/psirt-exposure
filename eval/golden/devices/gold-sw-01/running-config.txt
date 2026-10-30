@@ -1,0 +1,45 @@
+Building configuration...
+
+Current configuration : 1880 bytes
+!
+version 16.12
+service password-encryption
+hostname gold-sw-01
+!
+enable secret 9 $9$EXAMPLEONLY$NotARealHashForGoldenSetOnly000000000000004
+!
+ip dhcp snooping vlan 10,20
+ip dhcp snooping
+!
+vlan 10
+ name USERS
+!
+vlan 20
+ name VOICE
+!
+vlan 99
+ name MGMT
+!
+interface GigabitEthernet1/0/1
+ switchport access vlan 10
+ switchport mode access
+!
+interface GigabitEthernet1/0/24
+ switchport mode trunk
+ ip dhcp snooping trust
+!
+interface Vlan99
+ ip address 192.0.2.40 255.255.255.0
+!
+no ip http server
+no ip http secure-server
+!
+snmp-server view NO_CAF iso included
+snmp-server view NO_CAF cafSessionMethodsInfoEntry excluded
+snmp-server community EXAMPLEmon view NO_CAF RO
+!
+line vty 0 15
+ login local
+ transport input ssh
+!
+end

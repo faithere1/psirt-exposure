@@ -1,0 +1,52 @@
+# Raw Cisco PSIRT advisories used as offline fixtures.
+#
+# Each JSON file is the unmodified public CSAF 2.0 document, downloaded without credentials from
+#   https://sec.cloudapps.cisco.com/security/center/contentjson/CiscoSecurityAdvisory/<id>/csaf/<id>.json
+# Every advisory was selected because exposure depends on a configured feature, so the same
+# software version can be affected on one device and not on another.
+#
+# `key` is the short name used in samples/configs/labels.yaml and, later, in rules/.
+# `feature` is a human summary only; machine rules are written in Phase 2.
+fetched: 2026-10-30
+source: public-csaf
+advisories:
+  - key: webui
+    id: cisco-sa-iosxe-webui-privesc-j22SaA4z
+    cves: [CVE-2023-20198, CVE-2023-20273]
+    feature: HTTP server / web UI enabled (ip http server or ip http secure-server)
+  - key: smart-install
+    id: cisco-sa-20180328-smi2
+    cves: [CVE-2018-0171]
+    feature: Smart Install client enabled (vstack); disabled with "no vstack"
+  - key: snmp
+    id: cisco-sa-snmp-x4LPhte
+    cves: [CVE-2025-20352]
+    feature: SNMP enabled (any version); mitigated by a view that excludes the affected OIDs
+  - key: cip
+    id: cisco-sa-iosxe-cip-dos-9rTbKLt9
+    cves: [CVE-2022-20919]
+    feature: Common Industrial Protocol enabled (cip enable)
+  - key: ikev1
+    id: cisco-sa-iosxe-ikev1-dos-XHk3HzFC
+    cves: [CVE-2025-20192]
+    feature: IKEv1 VPN in use (crypto map or tunnel protection without an IKEv2 profile), listed platforms only
+  - key: ikev2
+    id: cisco-sa-asa-ftd-ios-dos-kPEpQGGK
+    cves: [CVE-2026-20012]
+    feature: IKEv2 VPN in use (IKEv2 profile attached to an applied crypto map or IPsec profile)
+  - key: iox
+    id: cisco-sa-iox-dos-95Fqnf7b
+    cves: [CVE-2025-20196]
+    feature: IOx application hosting enabled AND HTTP server enabled
+  - key: l2tp
+    id: cisco-sa-ios-xe-l2tp-dos-eB5tuFmV
+    cves: [CVE-2023-20227]
+    feature: L2TP enabled with active tunnels, software packet processor platforms only
+  - key: nat-dns-alg
+    id: cisco-sa-alg-dos-hbBS7SZE
+    cves: [CVE-2021-1446]
+    feature: NAT configured with DNS ALG left on; mitigated by "no ip nat service dns tcp/udp"
+  - key: dhcp-snooping
+    id: cisco-sa-iosxe-dhcpsn-dos-xBn8Mtks
+    cves: [CVE-2025-20162]
+    feature: DHCP snooping enabled on some but not all VLANs, ISR1100 / Catalyst 8200 / 8300 only

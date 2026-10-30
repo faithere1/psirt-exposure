@@ -1,0 +1,11 @@
+Cisco IOS XE Software, Version 17.06.04
+Cisco IOS Software [Fake], Version 17.06.04, RELEASE SOFTWARE (fc1)
+Technical Support: http://www.cisco.com/techsupport
+
+gold-edge-01 uptime is 2 weeks, 1 day, 4 hours, 12 minutes
+System returned to ROM by Reload Command
+
+cisco C8200-1N-4T (1RU) processor with 1631132K/6147K bytes of memory.
+Processor board ID FGLFAKE1001
+
+Configuration register is 0x2102

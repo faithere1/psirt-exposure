@@ -1,0 +1,168 @@
+# Ground-truth feature exposure for every sample device x fixture advisory.
+#
+# These labels describe the configuration only. Whether the running software version is
+# affected or fixed comes later from the openVuln OS-version data, so the final verdict
+# combines this label with a version check:
+#   present                  -> AFFECTED if the version is vulnerable, else FIXED_VERSION
+#   absent                   -> NOT_AFFECTED_FEATURE_DISABLED
+#   mitigated                -> MITIGATED (feature on, advisory mitigation configured)
+#   not_applicable_platform  -> NOT_AFFECTED_FEATURE_DISABLED (feature on, platform not listed)
+#
+# `note` explains non-obvious cases; it is the evidence a reviewer would check.
+# Advisory keys are defined in tests/fixtures/psirt/manifest.yaml.
+# All addresses, names, serials, keys and hashes in samples/configs are fake.
+
+devices:
+  edge-rtr-01:
+    platform: C8300-1N1S-6T
+    version: 17.09.04a
+    labels:
+      webui: present
+      smart-install: absent
+      snmp: present
+      cip: absent
+      ikev1: absent
+      ikev2: present
+      iox: absent
+      l2tp: absent
+      nat-dns-alg: present
+      dhcp-snooping: absent
+    notes:
+      webui: ip http server and ip http secure-server are both configured.
+      snmp: SNMPv2c community without a view that excludes the affected OIDs.
+      ikev2: crypto map CMAP-WAN has set ikev2-profile and is applied to Gi0/0/0.
+      nat-dns-alg: ip nat inside/outside configured, no "no ip nat service dns" lines.
+
+  edge-rtr-02:
+    platform: ISR4451-X/K9
+    version: 17.06.05
+    labels:
+      webui: absent
+      smart-install: absent
+      snmp: mitigated
+      cip: absent
+      ikev1: present
+      ikev2: absent
+      iox: absent
+      l2tp: present
+      nat-dns-alg: mitigated
+      dhcp-snooping: absent
+    notes:
+      webui: no ip http server and no ip http secure-server.
+      snmp: community is bound to view NO_BAD_SNMP that excludes cafSessionMethodsInfoEntry.
+      ikev1: Tunnel100 uses tunnel protection ipsec profile without an IKEv2 profile (crypto isakmp).
+      l2tp: L2TPv3 xconnect on Gi0/0/2; "active tunnels" needs show l2tp tunnel at runtime.
+      nat-dns-alg: NAT configured but both no ip nat service dns tcp and udp are present.
+
+  branch-isr-01:
+    platform: C1111-8P
+    version: 17.09.03a
+    labels:
+      webui: present
+      smart-install: absent
+      snmp: absent
+      cip: absent
+      ikev1: absent
+      ikev2: absent
+      iox: present
+      l2tp: absent
+      nat-dns-alg: present
+      dhcp-snooping: present
+    notes:
+      webui: no ip http server, but ip http secure-server is enabled.
+      iox: iox is configured and ip http secure-server is enabled (both conditions met).
+      dhcp-snooping: snooping on VLANs 10 and 20 only; VLAN 30 exists (some but not all), ISR1100 platform.
+
+  vpn-hub-01:
+    platform: C8500L-8S4X
+    version: 17.12.03
+    labels:
+      webui: absent
+      smart-install: absent
+      snmp: present
+      cip: absent
+      ikev1: present
+      ikev2: present
+      iox: absent
+      l2tp: present
+      nat-dns-alg: absent
+      dhcp-snooping: absent
+    notes:
+      snmp: SNMPv3 group V3-RO has no read view, so the affected OIDs are not excluded.
+      ikev1: crypto map CMAP-LEGACY has no IKEv2 profile and is applied to Te0/1/0.
+      ikev2: Tunnel0 uses IPsec profile IPSEC-SPOKES with set ikev2-profile.
+      l2tp: vpdn-group LNS-REMOTE accepts L2TP dial-in; C8500L is a listed platform.
+
+  access-sw-01:
+    platform: WS-C3850-48P
+    version: 16.03.07
+    labels:
+      webui: present
+      smart-install: present
+      snmp: present
+      cip: absent
+      ikev1: absent
+      ikev2: absent
+      iox: absent
+      l2tp: absent
+      nat-dns-alg: absent
+      dhcp-snooping: not_applicable_platform
+    notes:
+      webui: ip http server is enabled (secure-server disabled).
+      smart-install: no "no vstack"; Smart Install client is enabled by default on this release.
+      snmp: SNMPv2c RO and RW communities without an exclusion view.
+      dhcp-snooping: DHCP snooping is enabled but Catalyst 3850 is not a listed platform.
+
+  access-sw-02:
+    platform: C9200L-24T-4G
+    version: 17.03.06
+    labels:
+      webui: absent
+      smart-install: absent
+      snmp: mitigated
+      cip: absent
+      ikev1: absent
+      ikev2: absent
+      iox: absent
+      l2tp: absent
+      nat-dns-alg: absent
+      dhcp-snooping: absent
+    notes:
+      smart-install: no vstack is configured.
+      snmp: SNMPv3 group V3-RO reads through view NO_BAD_SNMP that excludes the affected OIDs.
+
+  ind-sw-01:
+    platform: IE-3400-8P2S
+    version: 17.09.04a
+    labels:
+      webui: absent
+      smart-install: absent
+      snmp: mitigated
+      cip: present
+      ikev1: absent
+      ikev2: absent
+      iox: absent
+      l2tp: absent
+      nat-dns-alg: absent
+      dhcp-snooping: absent
+    notes:
+      cip: cip enable on interface Vlan50.
+      iox: iox is configured but the HTTP server is disabled, so the advisory condition is not met.
+      snmp: community is bound to view NO_BAD_SNMP that excludes cafSessionMethodsInfoEntry.
+
+  dc-vrtr-01:
+    platform: C8000V
+    version: 17.12.02
+    labels:
+      webui: absent
+      smart-install: absent
+      snmp: absent
+      cip: absent
+      ikev1: absent
+      ikev2: absent
+      iox: absent
+      l2tp: absent
+      nat-dns-alg: absent
+      dhcp-snooping: absent
+    notes:
+      ikev1: crypto isakmp and crypto map CMAP-STAGED exist but the map is not applied to any interface.

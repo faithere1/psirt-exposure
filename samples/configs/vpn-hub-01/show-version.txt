@@ -1,0 +1,46 @@
+Cisco IOS XE Software, Version 17.12.03
+Cisco IOS Software [Dublin], c8000aep Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 17.12.3, RELEASE SOFTWARE (fc7)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2024 by Cisco Systems, Inc.
+Compiled Wed 20-Mar-24 01:39 by mcpre
+
+
+Cisco IOS-XE software, Copyright (c) 2005-2024 by cisco Systems, Inc.
+All rights reserved.  Certain components of Cisco IOS-XE software are
+licensed under the GNU General Public License ("GPL") Version 2.0.  The
+software code licensed under GPL Version 2.0 is free software that comes
+with ABSOLUTELY NO WARRANTY.  You can redistribute and/or modify such
+GPL code under the terms of GPL Version 2.0.  For more details, see the
+documentation or "License Notice" file accompanying the IOS-XE software,
+or the applicable URL provided on the flyer accompanying the IOS-XE
+software.
+
+
+ROM: 17.3(2r)
+
+vpn-hub-01 uptime is 14 weeks, 1 day, 9 hours, 51 minutes
+Uptime for this control processor is 14 weeks, 1 day, 9 hours, 53 minutes
+System returned to ROM by Reload Command
+System image file is "bootflash:c8000aep-universalk9.17.12.03.SPA.bin"
+Last reload reason: Reload Command
+
+
+Technology Package License Information:
+
+-----------------------------------------------------------------
+Technology Type          Technology-package       Technology-package
+                         Current                  Next Reboot
+-----------------------------------------------------------------
+Smart License Perpetual  network-advantage        network-advantage
+Smart License Subscrip   dna-advantage            dna-advantage
+
+cisco C8500L-8S4X (1RU) processor with 7104160K/6147K bytes of memory.
+Processor board ID FDOFAKE0008
+Router operating mode: Autonomous
+4 Ten Gigabit Ethernet interfaces
+8 Gigabit Ethernet interfaces
+32768K bytes of non-volatile configuration memory.
+16777216K bytes of physical memory.
+14016511K bytes of flash memory at bootflash:.
+
+Configuration register is 0x2102

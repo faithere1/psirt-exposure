@@ -1,0 +1,39 @@
+schema_version: 1
+id: l2tp
+advisory_id: cisco-sa-ios-xe-l2tp-dos-eB5tuFmV
+cves:
+- CVE-2023-20227
+title: Cisco IOS XE Software Layer 2 Tunneling Protocol Denial of Service Vulnerability
+status: draft
+os: ios-xe
+summary: L2TP tunnels are configured and active, indicating exposure to a DoS vulnerability in Cisco IOS
+  XE Software. The vulnerability affects certain Cisco Packet Processor products if they have L2TP enabled
+  and active tunnels.
+exposure:
+  line:
+    pattern: ^show l2tp tunnel$
+affected_platforms:
+- ^ISR1000\S+
+- '><!-- Example regex for ISR1000 Series, adjust as necessary based on the advisory text. --><br>^ISR1100$'
+- '><!-- Example regex for ISR1100, adjust as necessary. --><br>^ISR4000\S+$'
+- '><!-- Example regex for ISR4000 Series, adjust as necessary. --><br>^C8kV\S+'
+- '><!-- Example regex for Catalyst 8000V Edge Software, adjust as necessary. --><br>^C8200\S+'
+- '><!-- Example regex for Catalyst 8200 Series, adjust as necessary. --><br>^C8300\S+'
+- '><!-- Example regex for Catalyst 8300 Series, adjust as necessary. --><br>^C8500L$'
+- '><!-- Example regex for Catalyst 8500L Edge Platforms, adjust as necessary. --><br>^CSR1000V\S+'
+- '><!-- Example regex for Cloud Services Routers 1000V Series, adjust as necessary. --><br>^ISVR$'
+- '><!-- Example regex for Integrated Services Virtual Routers, adjust as necessary. --><br>^VG400$'
+- '><!-- Example regex for VG400 Analog Voice Gateways, adjust as necessary. --><br>^VG420$'
+- '><!-- Example regex for VG420 Analog Voice Gateways, adjust as necessary. --><br>^VG450$'
+mitigations:
+- id: block-l2tp-port
+  description: Infrastructure access control list (iACL) blocks UDP port 1701 where L2TP packets are not
+    expected.
+  condition:
+    line:
+      pattern: ^show ip access-lists CVE-2023-20227$
+runtime_checks:
+- command: show l2tp tunnel
+  description: Lists L2TP tunnels and their status, including total tunnels.
+- command: show ip access-lists CVE-2023-20227
+  description: Displays the iACL configured to mitigate the vulnerability by blocking UDP port 1701.

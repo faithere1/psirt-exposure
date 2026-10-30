@@ -1,0 +1,41 @@
+id: l2tp
+advisory_id: cisco-sa-ios-xe-l2tp-dos-eB5tuFmV
+cves: [CVE-2023-20227]
+title: Cisco IOS XE Software Layer 2 Tunneling Protocol Denial of Service Vulnerability
+status: reviewed
+summary: >-
+  L2TP is configured: an L2TPv3 xconnect (directly or through a pseudowire-class with
+  "encapsulation l2tpv3"), or a VPDN group using "protocol l2tp" with "vpdn enable". The advisory
+  also requires active tunnels, which only the runtime check can show. Software packet processor
+  platforms only.
+exposure:
+  any_of:
+    - block:
+        parent: '^interface '
+        has: ['^xconnect \S+ \d+ .*\bencapsulation l2tpv3\b']
+    - block:
+        parent: '^pseudowire-class (?P<pwclass>\S+)$'
+        has: ['^encapsulation l2tpv3$']
+        where:
+          block:
+            parent: '^interface '
+            has: ['^xconnect \S+ \d+ .*\bpw-class {pwclass}$']
+    - all_of:
+        - line: {pattern: '^vpdn enable$'}
+        - block:
+            parent: '^vpdn-group '
+            has: ['^protocol l2tp$']
+# 1000/1100/4000 Series ISRs, Catalyst 8000V/8200/8300/8500L, CSR 1000V, ISRv, VG400/420/450.
+affected_platforms:
+  - '^C11\d\d'
+  - '^ISR4\d{3}'
+  - '^C8000V'
+  - '^C82\d\d'
+  - '^C83\d\d'
+  - '^C8500L-'
+  - '^CSR1000V'
+  - '^ISRV'
+  - '^VG4[025]0'
+runtime_checks:
+  - command: show l2tp tunnel
+    description: '"Total tunnels" of at least 1 confirms active tunnels.'

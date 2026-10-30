@@ -1,0 +1,8 @@
+# gitleaks configuration: default rules plus narrowly scoped allowlist entries.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Public values copied verbatim from Cisco advisories (not credentials)"
+# Published indicator-of-compromise check from cisco-sa-iosxe-webui-privesc-j22SaA4z.
+regexes = ['''0ff4fbf0ecffa77ce8d3852a29263e263838e9bb''']

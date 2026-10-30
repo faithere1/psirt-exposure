@@ -1,0 +1,11 @@
+Cisco IOS XE Software, Version 17.03.04a
+Cisco IOS Software [Fake], Version 17.03.04a, RELEASE SOFTWARE (fc1)
+Technical Support: http://www.cisco.com/techsupport
+
+gold-isr-02 uptime is 2 weeks, 1 day, 4 hours, 12 minutes
+System returned to ROM by Reload Command
+
+cisco ISR4331/K9 (1RU) processor with 1631132K/6147K bytes of memory.
+Processor board ID FDOFAKE1002
+
+Configuration register is 0x2102

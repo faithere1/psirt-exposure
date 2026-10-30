@@ -1,0 +1,26 @@
+id: nat-dns-alg
+advisory_id: cisco-sa-alg-dos-hbBS7SZE
+cves: [CVE-2021-1446]
+title: Cisco IOS XE Software DNS NAT Protocol Application Layer Gateway Denial of Service Vulnerability
+status: reviewed
+summary: >-
+  NAT is configured ("ip nat inside", "ip nat outside" or "ip nat enable" on an interface); the
+  DNS ALG is on by default as soon as NAT is configured. Mitigated when both
+  "no ip nat service dns tcp" and "no ip nat service dns udp" are present.
+exposure:
+  block:
+    parent: '^interface '
+    has: ['^ip nat (inside|outside|enable)$']
+mitigations:
+  - id: dns-alg-disabled
+    description: Both "no ip nat service dns tcp" and "no ip nat service dns udp" are configured.
+    condition:
+      all_of:
+        - line: {pattern: '^no ip nat service dns tcp$'}
+        - line: {pattern: '^no ip nat service dns udp$'}
+    snippet: |-
+      no ip nat service dns tcp
+      no ip nat service dns udp
+runtime_checks:
+  - command: show ip nat statistics
+    description: At least one inside and one outside interface means NAT is active.

@@ -1,0 +1,24 @@
+id: smart-install
+advisory_id: cisco-sa-20180328-smi2
+cves: [CVE-2018-0171]
+title: Cisco IOS and IOS XE Software Smart Install Remote Code Execution Vulnerability
+status: reviewed
+summary: >-
+  The Smart Install client is enabled by default on supported Catalyst switches unless
+  "no vstack" is configured. Routers and switches outside the Smart Install supported-devices
+  list cannot run the client, so the feature is absent there.
+# IOS XE switches that run the Smart Install client (Catalyst 3650/3850/4500-E). Later
+# Catalyst 9000 and IE releases dropped or auto-disable the client (CSCvd36820); confirm with
+# the runtime check when in doubt.
+exposure:
+  all_of:
+    - platform: ['^WS-C3650', '^WS-C3850', '^WS-C45']
+    - not: {line: {pattern: '^no vstack$'}}
+runtime_checks:
+  - command: show vstack config
+    description: '"Role: Client" with "Oper Mode: Enabled" or "(SmartInstall enabled)" confirms exposure.'
+remediation:
+  description: >-
+    Disable the Smart Install client (not needed after zero-touch deployment).
+  snippet: |-
+    no vstack

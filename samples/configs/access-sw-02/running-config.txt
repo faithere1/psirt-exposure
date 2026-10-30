@@ -1,0 +1,100 @@
+Building configuration...
+
+Current configuration : 2610 bytes
+!
+! Last configuration change at 16:48:19 UTC Mon Sep 22 2026 by netadmin
+!
+version 17.3
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service call-home
+no platform punt-keepalive disable-kernel-core
+!
+hostname access-sw-02
+!
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+!
+enable secret 9 $9$EXAMPLEONLY$NotARealHashForTestingOnly0000000000000009
+!
+aaa new-model
+aaa authentication login default local
+aaa authorization exec default local
+aaa session-id common
+switch 1 provision c9200l-24t-4g
+!
+ip domain name example.net
+!
+no vstack
+!
+login on-success log
+!
+license boot level network-essentials addon dna-essentials
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+username netadmin privilege 15 secret 9 $9$EXAMPLEONLY$NotARealHashForTestingOnly0000000000000010
+!
+redundancy
+ mode sso
+!
+vlan 10
+ name USERS
+!
+vlan 99
+ name MGMT
+!
+interface GigabitEthernet0/0
+ vrf forwarding Mgmt-vrf
+ no ip address
+ shutdown
+!
+interface GigabitEthernet1/0/1
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/1/1
+ description Uplink to distribution
+ switchport mode trunk
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan99
+ ip address 192.0.2.32 255.255.255.0
+!
+ip default-gateway 192.0.2.1
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+ip ssh version 2
+!
+ip access-list standard ACL-SNMP
+ 10 permit 192.0.2.50
+!
+snmp-server view NO_BAD_SNMP iso included
+snmp-server view NO_BAD_SNMP snmpUsmMIB excluded
+snmp-server view NO_BAD_SNMP snmpVacmMIB excluded
+snmp-server view NO_BAD_SNMP snmpCommunityMIB excluded
+snmp-server view NO_BAD_SNMP cafSessionMethodsInfoEntry excluded
+snmp-server group V3-RO v3 priv read NO_BAD_SNMP access ACL-SNMP
+snmp-server user nms-poller V3-RO v3 auth sha EXAMPLE-AUTH-NOT-REAL priv aes 128 EXAMPLE-PRIV-NOT-REAL
+snmp-server location Example Site A IDF2
+!
+control-plane
+ service-policy input system-cpp-policy
+!
+line con 0
+ stopbits 1
+line vty 0 15
+ transport input ssh
+!
+ntp server 192.0.2.123
+!
+end

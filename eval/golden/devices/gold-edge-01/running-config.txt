@@ -1,0 +1,89 @@
+Building configuration...
+
+Current configuration : 2410 bytes
+!
+version 17.6
+service password-encryption
+hostname gold-edge-01
+!
+enable secret 9 $9$EXAMPLEONLY$NotARealHashForGoldenSetOnly000000000000001
+!
+ip domain name example.org
+!
+ip dhcp snooping vlan 1-20
+ip dhcp snooping
+!
+username ops privilege 15 secret 9 $9$EXAMPLEONLY$NotARealHashForGoldenSetOnly000000000000002
+!
+vlan 10
+ name STAFF
+!
+vlan 20
+ name GUEST
+!
+crypto ikev2 proposal PROP-1
+ encryption aes-cbc-256
+ integrity sha256
+ group 19
+!
+crypto ikev2 keyring KR-HUB
+ peer HUB
+  address 203.0.113.50
+  pre-shared-key EXAMPLE-psk-golden-01
+!
+crypto ikev2 profile IKEV2-HUB
+ match identity remote address 203.0.113.50 255.255.255.255
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local KR-HUB
+!
+crypto ipsec profile IPSEC-HUB
+ set ikev2-profile IKEV2-HUB
+!
+pseudowire-class PW-L2TP
+ encapsulation l2tpv3
+ ip local interface Loopback0
+!
+interface Loopback0
+ ip address 192.0.2.1 255.255.255.255
+!
+interface Tunnel10
+ ip address 198.51.100.129 255.255.255.252
+ tunnel source GigabitEthernet0/0/0
+ tunnel destination 203.0.113.50
+ tunnel mode ipsec ipv4
+ tunnel protection ipsec profile IPSEC-HUB
+!
+interface GigabitEthernet0/0/0
+ description WAN
+ ip address 203.0.113.2 255.255.255.252
+ ip nat enable
+!
+interface GigabitEthernet0/0/1
+ description L2 extension to remote site
+ no ip address
+ xconnect 192.0.2.9 101 pw-class PW-L2TP
+!
+interface GigabitEthernet0/0/2
+ description LAN
+ ip address 198.51.100.1 255.255.255.128
+ ip nat enable
+!
+no ip nat service dns udp
+ip nat source list ACL-NAT interface GigabitEthernet0/0/0 overload
+!
+ip http server
+ip http active-session-modules none
+no ip http secure-server
+!
+ip access-list standard ACL-NAT
+ 10 permit 198.51.100.0 0.0.0.127
+!
+snmp-server group MON v3 priv
+snmp-server user monitor MON v3 auth sha EXAMPLEauth01 priv aes 128 EXAMPLEpriv01
+!
+line vty 0 4
+ login local
+ transport input ssh
+!
+end

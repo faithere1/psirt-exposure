@@ -1,0 +1,47 @@
+schema_version: 1
+id: iox
+advisory_id: cisco-sa-iox-dos-95Fqnf7b
+cves:
+- CVE-2025-20196
+title: Cisco IOx Application Hosting Environment Denial of Service Vulnerability
+status: draft
+os: ios-xe
+summary: A vulnerability in Cisco IOx application hosting environment allows an unauthenticated remote
+  attacker to cause a DoS condition by sending crafted HTTP requests. The feature is enabled if 'ip http
+  server' or 'ip http secure-server' commands are present and the IOx service (CAF) is running.
+exposure:
+  all_of:
+  - line:
+      pattern: ^iox$
+  - any_of:
+    - line:
+        pattern: ^ip http server$
+    - line:
+        pattern: ^ip http secure-server$
+  - line:
+      pattern: '^iox service (CAF) : Running$'
+affected_platforms:
+- 800 Series Industrial ISRs
+- Catalyst 9100 Family of Access Points (COS-AP)
+- CGR1000 Compute Modules
+- IC3000 Industrial Compute Gateways
+- IR510 WPAN Industrial Routers
+mitigations:
+- id: disable-iox
+  description: Disable Cisco IOx with 'no iox'.
+  condition:
+    line:
+      pattern: ^no iox$
+- id: disable-http-server
+  description: Disable HTTP server with 'no ip http server' and HTTPS server with 'no ip http secure-server'.
+  condition:
+    all_of:
+    - line:
+        pattern: ^no ip http server$
+    - line:
+        pattern: ^no ip http secure-server$
+runtime_checks:
+- command: show iox-service
+  description: Lists the status of IOx services.
+- command: show running-config | include ip http server|secure|active
+  description: Checks for HTTP and HTTPS server configuration.

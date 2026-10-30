@@ -1,0 +1,45 @@
+Cisco IOS XE Software, Version 17.09.04a
+Cisco IOS Software [Cupertino], c8000be Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 17.9.4a, RELEASE SOFTWARE (fc3)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2023 by Cisco Systems, Inc.
+Compiled Fri 20-Oct-23 10:44 by mcpre
+
+
+Cisco IOS-XE software, Copyright (c) 2005-2023 by cisco Systems, Inc.
+All rights reserved.  Certain components of Cisco IOS-XE software are
+licensed under the GNU General Public License ("GPL") Version 2.0.  The
+software code licensed under GPL Version 2.0 is free software that comes
+with ABSOLUTELY NO WARRANTY.  You can redistribute and/or modify such
+GPL code under the terms of GPL Version 2.0.  For more details, see the
+documentation or "License Notice" file accompanying the IOS-XE software,
+or the applicable URL provided on the flyer accompanying the IOS-XE
+software.
+
+
+ROM: 17.3(5r)
+
+edge-rtr-01 uptime is 8 weeks, 2 days, 3 hours, 17 minutes
+Uptime for this control processor is 8 weeks, 2 days, 3 hours, 19 minutes
+System returned to ROM by Reload Command
+System image file is "bootflash:c8000be-universalk9.17.09.04a.SPA.bin"
+Last reload reason: Reload Command
+
+
+Technology Package License Information:
+
+-----------------------------------------------------------------
+Technology Type          Technology-package       Technology-package
+                         Current                  Next Reboot
+-----------------------------------------------------------------
+Smart License Perpetual  network-advantage        network-advantage
+Smart License Subscrip   dna-advantage            dna-advantage
+
+cisco C8300-1N1S-6T (1RU) processor with 3753856K/6147K bytes of memory.
+Processor board ID FDOFAKE0001
+Router operating mode: Autonomous
+6 Gigabit Ethernet interfaces
+32768K bytes of non-volatile configuration memory.
+8388608K bytes of physical memory.
+7090175K bytes of flash memory at bootflash:.
+
+Configuration register is 0x2102

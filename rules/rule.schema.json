@@ -1,0 +1,625 @@
+{
+  "$defs": {
+    "AllOf": {
+      "additionalProperties": false,
+      "properties": {
+        "all_of": {
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/AllOf"
+              },
+              {
+                "$ref": "#/$defs/AnyOf"
+              },
+              {
+                "$ref": "#/$defs/Not"
+              },
+              {
+                "$ref": "#/$defs/Line"
+              },
+              {
+                "$ref": "#/$defs/Block"
+              },
+              {
+                "$ref": "#/$defs/Each"
+              },
+              {
+                "$ref": "#/$defs/Platform"
+              },
+              {
+                "$ref": "#/$defs/VlanCoverageCond"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "All Of",
+          "type": "array"
+        }
+      },
+      "required": [
+        "all_of"
+      ],
+      "title": "AllOf",
+      "type": "object"
+    },
+    "AnyOf": {
+      "additionalProperties": false,
+      "properties": {
+        "any_of": {
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/AllOf"
+              },
+              {
+                "$ref": "#/$defs/AnyOf"
+              },
+              {
+                "$ref": "#/$defs/Not"
+              },
+              {
+                "$ref": "#/$defs/Line"
+              },
+              {
+                "$ref": "#/$defs/Block"
+              },
+              {
+                "$ref": "#/$defs/Each"
+              },
+              {
+                "$ref": "#/$defs/Platform"
+              },
+              {
+                "$ref": "#/$defs/VlanCoverageCond"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Any Of",
+          "type": "array"
+        }
+      },
+      "required": [
+        "any_of"
+      ],
+      "title": "AnyOf",
+      "type": "object"
+    },
+    "Block": {
+      "additionalProperties": false,
+      "properties": {
+        "block": {
+          "$ref": "#/$defs/BlockSpec"
+        }
+      },
+      "required": [
+        "block"
+      ],
+      "title": "Block",
+      "type": "object"
+    },
+    "BlockSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "parent": {
+          "description": "Python regex (re.search)",
+          "minLength": 1,
+          "title": "Parent",
+          "type": "string"
+        },
+        "has": {
+          "items": {
+            "description": "Python regex (re.search)",
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Has",
+          "type": "array"
+        },
+        "lacks": {
+          "items": {
+            "description": "Python regex (re.search)",
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Lacks",
+          "type": "array"
+        },
+        "where": {
+          "anyOf": [
+            {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/AllOf"
+                },
+                {
+                  "$ref": "#/$defs/AnyOf"
+                },
+                {
+                  "$ref": "#/$defs/Not"
+                },
+                {
+                  "$ref": "#/$defs/Line"
+                },
+                {
+                  "$ref": "#/$defs/Block"
+                },
+                {
+                  "$ref": "#/$defs/Each"
+                },
+                {
+                  "$ref": "#/$defs/Platform"
+                },
+                {
+                  "$ref": "#/$defs/VlanCoverageCond"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Where"
+        }
+      },
+      "required": [
+        "parent"
+      ],
+      "title": "BlockSpec",
+      "type": "object"
+    },
+    "Each": {
+      "additionalProperties": false,
+      "properties": {
+        "each": {
+          "$ref": "#/$defs/EachSpec"
+        }
+      },
+      "required": [
+        "each"
+      ],
+      "title": "Each",
+      "type": "object"
+    },
+    "EachSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "select": {
+          "description": "Python regex (re.search)",
+          "minLength": 1,
+          "title": "Select",
+          "type": "string"
+        },
+        "capture": {
+          "description": "Python regex (re.search)",
+          "minLength": 1,
+          "title": "Capture",
+          "type": "string"
+        },
+        "require": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/AllOf"
+            },
+            {
+              "$ref": "#/$defs/AnyOf"
+            },
+            {
+              "$ref": "#/$defs/Not"
+            },
+            {
+              "$ref": "#/$defs/Line"
+            },
+            {
+              "$ref": "#/$defs/Block"
+            },
+            {
+              "$ref": "#/$defs/Each"
+            },
+            {
+              "$ref": "#/$defs/Platform"
+            },
+            {
+              "$ref": "#/$defs/VlanCoverageCond"
+            }
+          ],
+          "title": "Require"
+        }
+      },
+      "required": [
+        "select",
+        "capture",
+        "require"
+      ],
+      "title": "EachSpec",
+      "type": "object"
+    },
+    "Line": {
+      "additionalProperties": false,
+      "properties": {
+        "line": {
+          "$ref": "#/$defs/LineSpec"
+        }
+      },
+      "required": [
+        "line"
+      ],
+      "title": "Line",
+      "type": "object"
+    },
+    "LineSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "pattern": {
+          "description": "Python regex (re.search)",
+          "minLength": 1,
+          "title": "Pattern",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pattern"
+      ],
+      "title": "LineSpec",
+      "type": "object"
+    },
+    "Mitigation": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "condition": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/AllOf"
+            },
+            {
+              "$ref": "#/$defs/AnyOf"
+            },
+            {
+              "$ref": "#/$defs/Not"
+            },
+            {
+              "$ref": "#/$defs/Line"
+            },
+            {
+              "$ref": "#/$defs/Block"
+            },
+            {
+              "$ref": "#/$defs/Each"
+            },
+            {
+              "$ref": "#/$defs/Platform"
+            },
+            {
+              "$ref": "#/$defs/VlanCoverageCond"
+            }
+          ],
+          "title": "Condition"
+        },
+        "snippet": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Config commands that apply this workaround",
+          "title": "Snippet"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "condition"
+      ],
+      "title": "Mitigation",
+      "type": "object"
+    },
+    "Not": {
+      "additionalProperties": false,
+      "properties": {
+        "not": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/AllOf"
+            },
+            {
+              "$ref": "#/$defs/AnyOf"
+            },
+            {
+              "$ref": "#/$defs/Not"
+            },
+            {
+              "$ref": "#/$defs/Line"
+            },
+            {
+              "$ref": "#/$defs/Block"
+            },
+            {
+              "$ref": "#/$defs/Each"
+            },
+            {
+              "$ref": "#/$defs/Platform"
+            },
+            {
+              "$ref": "#/$defs/VlanCoverageCond"
+            }
+          ],
+          "title": "Not"
+        }
+      },
+      "required": [
+        "not"
+      ],
+      "title": "Not",
+      "type": "object"
+    },
+    "Platform": {
+      "additionalProperties": false,
+      "properties": {
+        "platform": {
+          "items": {
+            "description": "Python regex (re.search)",
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Platform",
+          "type": "array"
+        }
+      },
+      "required": [
+        "platform"
+      ],
+      "title": "Platform",
+      "type": "object"
+    },
+    "Remediation": {
+      "additionalProperties": false,
+      "description": "A config change that removes the exposure (see \"Remediation hints\" above).",
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "snippet": {
+          "description": "Config commands that remove the exposure",
+          "minLength": 1,
+          "title": "Snippet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "description",
+        "snippet"
+      ],
+      "title": "Remediation",
+      "type": "object"
+    },
+    "RuleStatus": {
+      "enum": [
+        "draft",
+        "reviewed"
+      ],
+      "title": "RuleStatus",
+      "type": "string"
+    },
+    "RuntimeCheck": {
+      "additionalProperties": false,
+      "description": "A fact the config cannot show; reported so the operator can confirm it.",
+      "properties": {
+        "command": {
+          "minLength": 1,
+          "title": "Command",
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command",
+        "description"
+      ],
+      "title": "RuntimeCheck",
+      "type": "object"
+    },
+    "VlanCoverage": {
+      "enum": [
+        "partial",
+        "all",
+        "none"
+      ],
+      "title": "VlanCoverage",
+      "type": "string"
+    },
+    "VlanCoverageCond": {
+      "additionalProperties": false,
+      "properties": {
+        "vlan_coverage": {
+          "$ref": "#/$defs/VlanCoverageSpec"
+        }
+      },
+      "required": [
+        "vlan_coverage"
+      ],
+      "title": "VlanCoverageCond",
+      "type": "object"
+    },
+    "VlanCoverageSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "pattern": {
+          "description": "Python regex (re.search)",
+          "minLength": 1,
+          "title": "Pattern",
+          "type": "string"
+        },
+        "coverage": {
+          "$ref": "#/$defs/VlanCoverage"
+        },
+        "include_default_vlan": {
+          "default": true,
+          "title": "Include Default Vlan",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "pattern",
+        "coverage"
+      ],
+      "title": "VlanCoverageSpec",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "id": {
+      "description": "Advisory key, e.g. 'webui'",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "title": "Id",
+      "type": "string"
+    },
+    "advisory_id": {
+      "pattern": "^cisco-sa-[A-Za-z0-9-]+$",
+      "title": "Advisory Id",
+      "type": "string"
+    },
+    "cves": {
+      "items": {
+        "pattern": "^CVE-\\d{4}-\\d{4,}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Cves",
+      "type": "array"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/RuleStatus"
+    },
+    "os": {
+      "const": "ios-xe",
+      "default": "ios-xe",
+      "title": "Os",
+      "type": "string"
+    },
+    "summary": {
+      "description": "Human-readable exposure condition",
+      "minLength": 1,
+      "title": "Summary",
+      "type": "string"
+    },
+    "exposure": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/AllOf"
+        },
+        {
+          "$ref": "#/$defs/AnyOf"
+        },
+        {
+          "$ref": "#/$defs/Not"
+        },
+        {
+          "$ref": "#/$defs/Line"
+        },
+        {
+          "$ref": "#/$defs/Block"
+        },
+        {
+          "$ref": "#/$defs/Each"
+        },
+        {
+          "$ref": "#/$defs/Platform"
+        },
+        {
+          "$ref": "#/$defs/VlanCoverageCond"
+        }
+      ],
+      "title": "Exposure"
+    },
+    "affected_platforms": {
+      "anyOf": [
+        {
+          "items": {
+            "description": "Python regex (re.search)",
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "PID patterns; None means every platform running the OS",
+      "title": "Affected Platforms"
+    },
+    "mitigations": {
+      "items": {
+        "$ref": "#/$defs/Mitigation"
+      },
+      "title": "Mitigations",
+      "type": "array"
+    },
+    "runtime_checks": {
+      "items": {
+        "$ref": "#/$defs/RuntimeCheck"
+      },
+      "title": "Runtime Checks",
+      "type": "array"
+    },
+    "remediation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Remediation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "id",
+    "advisory_id",
+    "cves",
+    "title",
+    "status",
+    "summary",
+    "exposure"
+  ],
+  "title": "Rule",
+  "type": "object"
+}

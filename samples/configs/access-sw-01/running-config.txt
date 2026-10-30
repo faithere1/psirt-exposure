@@ -1,0 +1,100 @@
+Building configuration...
+
+Current configuration : 3021 bytes
+!
+! Last configuration change at 11:20:05 UTC Fri Jun 5 2026 by netadmin
+!
+version 16.3
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service call-home
+no platform punt-keepalive disable-kernel-core
+!
+hostname access-sw-01
+!
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+!
+enable secret 5 $1$EXAM$NotARealMd5HashFake0.
+!
+no aaa new-model
+switch 1 provision ws-c3850-48p
+!
+ip domain-name example.net
+!
+ip dhcp snooping vlan 10,20,99
+ip dhcp snooping
+!
+license boot level ipservicesk9
+diagnostic bootup level minimal
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+username netadmin privilege 15 secret 5 $1$EXAM$NotARealMd5HashFake1.
+!
+redundancy
+ mode sso
+!
+vlan 10
+ name USERS
+!
+vlan 20
+ name PRINTERS
+!
+vlan 99
+ name MGMT
+!
+interface GigabitEthernet0/0
+ vrf forwarding Mgmt-vrf
+ no ip address
+ shutdown
+!
+interface GigabitEthernet1/0/1
+ switchport access vlan 10
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/2
+ switchport access vlan 20
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/1/1
+ description Uplink to distribution
+ switchport mode trunk
+ ip dhcp snooping trust
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan99
+ ip address 192.0.2.31 255.255.255.0
+!
+ip default-gateway 192.0.2.1
+ip forward-protocol nd
+ip http server
+ip http authentication local
+no ip http secure-server
+!
+snmp-server community EXAMPLE-RO RO
+snmp-server community EXAMPLE-RW RW
+snmp-server location Example Site A IDF1
+!
+line con 0
+ stopbits 1
+line vty 0 4
+ login local
+ transport input ssh telnet
+line vty 5 15
+ login local
+ transport input ssh
+!
+ntp server 192.0.2.123
+!
+end

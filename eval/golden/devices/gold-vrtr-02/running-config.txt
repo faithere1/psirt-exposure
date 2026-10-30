@@ -1,0 +1,72 @@
+Building configuration...
+
+Current configuration : 2290 bytes
+!
+version 17.12
+service password-encryption
+hostname gold-vrtr-02
+!
+enable secret 9 $9$EXAMPLEONLY$NotARealHashForGoldenSetOnly000000000000006
+!
+crypto ikev2 keyring KR-PEER
+ peer PEER
+  address 203.0.113.90
+  pre-shared-key EXAMPLE-psk-golden-03
+!
+crypto ikev2 profile IKEV2-PEER
+ match identity remote address 203.0.113.90 255.255.255.255
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local KR-PEER
+!
+crypto ipsec transform-set TS-GCM esp-gcm 256
+ mode tunnel
+!
+crypto map CMAP-CLOUD 10 ipsec-isakmp
+ set peer 203.0.113.90
+ set transform-set TS-GCM
+ set ikev2-profile IKEV2-PEER
+ match address ACL-CLOUD
+!
+interface GigabitEthernet1
+ description WAN
+ ip address 203.0.113.86 255.255.255.252
+ ip nat outside
+ crypto map CMAP-CLOUD
+!
+interface GigabitEthernet2
+ description LAN
+ ip address 198.51.100.193 255.255.255.192
+ ip nat inside
+!
+interface GigabitEthernet3
+ description L2 circuit
+ no ip address
+ xconnect 192.0.2.77 300 encapsulation l2tpv3 manual pw-class DIRECT
+!
+interface VirtualPortGroup0
+ ip address 192.0.2.249 255.255.255.252
+!
+iox
+!
+no ip nat service dns tcp
+no ip nat service dns udp
+ip nat inside source list ACL-NAT interface GigabitEthernet1 overload
+!
+ip http server
+ip http secure-server
+ip http active-session-modules none
+ip http secure-active-session-modules none
+!
+ip access-list standard ACL-NAT
+ 10 permit 198.51.100.192 0.0.0.63
+ip access-list extended ACL-CLOUD
+ 10 permit ip 198.51.100.192 0.0.0.63 192.0.2.0 0.0.0.255
+!
+snmp-server group AUDIT v3 priv read AUDIT-VIEW
+!
+line vty 0 4
+ login local
+ transport input ssh
+!
+end

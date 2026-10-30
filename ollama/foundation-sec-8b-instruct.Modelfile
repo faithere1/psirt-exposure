@@ -1,0 +1,27 @@
+# Foundation-Sec-1.1-8B-Instruct for netsec-check (default LLM backend).
+#
+# The GGUF on Hugging Face ships without a chat template, so Ollama would send the raw prompt and
+# drop the system message. This Modelfile adds the template from the upstream
+# chat_template.jinja (fdtn-ai/Foundation-Sec-1.1-8B-Instruct).
+#
+#   ollama pull hf.co/fdtn-ai/Foundation-Sec-1.1-8B-Instruct-Q4_K_M-GGUF
+#   ollama create foundation-sec-8b-instruct -f ollama/foundation-sec-8b-instruct.Modelfile
+FROM hf.co/fdtn-ai/Foundation-Sec-1.1-8B-Instruct-Q4_K_M-GGUF
+
+TEMPLATE """{{- range $i, $_ := .Messages }}
+{{- $last := eq (len (slice $.Messages $i)) 1 }}
+{{- if eq .Role "system" }}<|system|>
+{{ .Content }}
+{{ else if eq .Role "user" }}<|user|>
+{{ .Content }}
+{{ else if eq .Role "assistant" }}<|assistant|>
+{{ .Content }}{{ if not $last }}<|end_of_text|>
+{{ end }}
+{{- end }}
+{{- if and $last (ne .Role "assistant") }}<|assistant|>
+{{ end }}
+{{- end }}"""
+
+PARAMETER stop "<|end_of_text|>"
+PARAMETER stop "<|user|>"
+PARAMETER stop "<|system|>"

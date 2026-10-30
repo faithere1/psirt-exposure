@@ -1,0 +1,41 @@
+schema_version: 1
+id: dhcp-snooping
+advisory_id: cisco-sa-iosxe-dhcpsn-dos-xBn8Mtks
+cves:
+- CVE-2025-20162
+title: Cisco IOS XE Software DHCP Snooping Denial of Service Vulnerability
+status: draft
+os: ios-xe
+summary: DHCP snooping enabled for some, but not all VLANs can lead to a DoS condition due to improper
+  handling of DHCP request packets. The vulnerability affects certain Cisco IOS XE Software running on
+  ISR 1100 Series and Catalyst 8200/8300 Series Edge Platforms.
+exposure:
+  block:
+    parent: ^ip dhcp snooping vlan
+    has:
+    - (^\d+|\d+-\d+)\s
+    - (^\d+,?\s*\d+(?:,\s*\d+)*$)
+    lacks: []
+    where:
+      not:
+        each:
+          select: ^show vlan
+          capture: \d+
+          require:
+            line:
+              pattern: ^VLAN Name.*?active
+affected_platforms:
+- ^ISR1\d{3}
+- ^C8200
+- ^C8300
+mitigations:
+- id: enable-dhcp-snooping-all-vlans
+  description: Enable DHCP snooping on all VLANs using 'ip dhcp snooping vlan <all_vlans>'.
+  condition:
+    line:
+      pattern: ^ip dhcp snooping vlan .*$
+runtime_checks:
+- command: show ip dhcp snooping
+  description: Lists VLANs with DHCP snooping enabled and other related configuration.
+- command: show vlan
+  description: Lists all active VLANs on the device.

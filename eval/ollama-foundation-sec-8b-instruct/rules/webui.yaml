@@ -1,0 +1,51 @@
+schema_version: 1
+id: webui
+advisory_id: cisco-sa-iosxe-webui-privesc-j22SaA4z
+cves:
+- CVE-2023-20198
+- CVE-2023-20273
+title: Multiple Vulnerabilities in Cisco IOS XE Software Web UI Feature
+status: draft
+os: ios-xe
+summary: The web UI feature in Cisco IOS XE Software is vulnerable if enabled (via 'ip http server' or
+  'ip http secure-server') and not mitigated by specific configurations.
+exposure:
+  all_of:
+  - line:
+      pattern: ^ip http (server|secure-server)$
+  - not:
+      any_of:
+      - line:
+          pattern: ^ip http active-session-modules none$
+      - platform:
+        - ^ASA
+        - ^FTD
+        - ^ISE
+        - ^IOS
+        - ^NX-OS
+      - line:
+          pattern: ^no ip http server$
+      - line:
+          pattern: ^no ip http secure-server$
+      - line:
+          pattern: ^ip http access-class (\d+)$
+affected_platforms:
+- ^CISCO-IOS-XE
+mitigations:
+- id: disable-http-server
+  description: Disable the HTTP Server feature by using 'no ip http server' or 'no ip http secure-server'.
+  condition:
+    line:
+      pattern: ^no ip http (server|secure-server)$
+- id: limit-http-access
+  description: Limit HTTP Server access to trusted networks using an access list.
+  condition:
+    block:
+      parent: '^ip http access-class '
+      has:
+      - ^access-list \d+ permit 192.168\.0\.0 0.0.0.255$
+      - ^access-list \d+ deny   any$
+      lacks: []
+runtime_checks:
+- command: show running-config | include ip http server|secure|active
+  description: Lists the configuration for HTTP and HTTPS servers.

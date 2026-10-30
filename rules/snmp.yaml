@@ -1,0 +1,37 @@
+id: snmp
+advisory_id: cisco-sa-snmp-x4LPhte
+cves: [CVE-2025-20352]
+title: Cisco IOS and IOS XE Software SNMP Denial of Service and Remote Code Execution Vulnerability
+status: reviewed
+summary: >-
+  SNMP is enabled: any "snmp-server community" (v1/v2c), or an SNMPv3 group together with an
+  SNMPv3 user. Mitigated when every community and every group reads through a view that excludes
+  cafSessionMethodsInfoEntry.
+exposure:
+  any_of:
+    - line: {pattern: '^snmp-server community \S+'}
+    - all_of:
+        - line: {pattern: '^snmp-server group \S+ v3\b'}
+        - line: {pattern: '^snmp-server user \S+ \S+ v3\b'}
+mitigations:
+  - id: exclude-affected-oid
+    description: >-
+      Every community uses "view <V>" and every group uses "read <V>", where view <V> has
+      "cafSessionMethodsInfoEntry excluded". A community or group without a view sees all OIDs.
+    condition:
+      all_of:
+        - each:
+            select: '^snmp-server community '
+            capture: '\sview (?P<view>\S+)'
+            require:
+              line: {pattern: '^snmp-server view {view} cafSessionMethodsInfoEntry excluded$'}
+        - each:
+            select: '^snmp-server group '
+            capture: '\sread (?P<view>\S+)'
+            require:
+              line: {pattern: '^snmp-server view {view} cafSessionMethodsInfoEntry excluded$'}
+    snippet: |-
+      snmp-server view <view> iso included
+      snmp-server view <view> cafSessionMethodsInfoEntry excluded
+      snmp-server community <community> view <view> RO
+      snmp-server group <group> v3 priv read <view>

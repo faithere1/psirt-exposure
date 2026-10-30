@@ -1,0 +1,34 @@
+id: webui
+advisory_id: cisco-sa-iosxe-webui-privesc-j22SaA4z
+cves: [CVE-2023-20198, CVE-2023-20273]
+title: Multiple Vulnerabilities in Cisco IOS XE Software Web UI Feature
+status: reviewed
+summary: >-
+  The web UI is enabled by "ip http server" or "ip http secure-server" in the global
+  configuration. Not exploitable over a transport whose active session modules are set to none.
+exposure:
+  any_of:
+    - line: {pattern: '^ip http server$'}
+    - line: {pattern: '^ip http secure-server$'}
+mitigations:
+  - id: session-modules-none
+    description: >-
+      Every enabled HTTP/HTTPS server has its active session modules set to none
+      ("ip http active-session-modules none" / "ip http secure-active-session-modules none").
+    condition:
+      all_of:
+        - any_of:
+            - not: {line: {pattern: '^ip http server$'}}
+            - line: {pattern: '^ip http active-session-modules none$'}
+        - any_of:
+            - not: {line: {pattern: '^ip http secure-server$'}}
+            - line: {pattern: '^ip http secure-active-session-modules none$'}
+    snippet: |-
+      ip http active-session-modules none
+      ip http secure-active-session-modules none
+remediation:
+  description: >-
+    If the web UI is not needed, disable both HTTP servers.
+  snippet: |-
+    no ip http server
+    no ip http secure-server

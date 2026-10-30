@@ -1,0 +1,141 @@
+Building configuration...
+
+Current configuration : 4120 bytes
+!
+! Last configuration change at 18:30:02 UTC Wed Oct 15 2026 by netadmin
+!
+version 17.12
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+platform qfp utilization monitor load 80
+!
+hostname vpn-hub-01
+!
+boot-start-marker
+boot-end-marker
+!
+logging buffered 128000 informational
+enable secret 9 $9$EXAMPLEONLY$NotARealHashForTestingOnly0000000000000006
+!
+aaa new-model
+aaa authentication login default local
+aaa authorization exec default local
+aaa session-id common
+!
+ip domain name example.net
+!
+vpdn enable
+!
+vpdn-group LNS-REMOTE
+ accept-dialin
+  protocol l2tp
+  virtual-template 1
+ terminate-from hostname lac-site-c
+ lcp renegotiation always
+ l2tp tunnel password 7 0000EXAMPLE0000
+!
+license udi pid C8500L-8S4X sn FDOFAKE0008
+!
+username netadmin privilege 15 secret 9 $9$EXAMPLEONLY$NotARealHashForTestingOnly0000000000000007
+!
+redundancy
+!
+crypto ikev2 proposal PROP-AES256
+ encryption aes-gcm-256
+ prf sha384
+ group 20
+!
+crypto ikev2 policy POL-AES256
+ proposal PROP-AES256
+!
+crypto ikev2 keyring KR-SPOKES
+ peer ANY
+  address 0.0.0.0 0.0.0.0
+  pre-shared-key EXAMPLE-PSK-NOT-REAL
+ !
+!
+crypto ikev2 profile IKEV2-SPOKES
+ match identity remote address 0.0.0.0
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local KR-SPOKES
+!
+crypto isakmp policy 20
+ encryption aes 256
+ hash sha256
+ authentication pre-share
+ group 14
+crypto isakmp key EXAMPLE-PSK-NOT-REAL address 203.0.113.60
+!
+crypto ipsec transform-set TS-GCM esp-gcm 256
+ mode transport
+crypto ipsec transform-set TS-LEGACY esp-aes 256 esp-sha256-hmac
+ mode tunnel
+!
+crypto ipsec profile IPSEC-SPOKES
+ set transform-set TS-GCM
+ set ikev2-profile IKEV2-SPOKES
+!
+crypto map CMAP-LEGACY 10 ipsec-isakmp
+ set peer 203.0.113.60
+ set transform-set TS-LEGACY
+ match address ACL-VPN-LEGACY
+!
+interface Loopback0
+ ip address 192.0.2.8 255.255.255.255
+!
+interface Tunnel0
+ description DMVPN hub (IKEv2)
+ ip address 198.51.100.129 255.255.255.192
+ no ip redirects
+ ip mtu 1400
+ ip nhrp network-id 100
+ ip nhrp redirect
+ ip tcp adjust-mss 1360
+ tunnel source TenGigabitEthernet0/1/0
+ tunnel mode gre multipoint
+ tunnel protection ipsec profile IPSEC-SPOKES
+!
+interface TenGigabitEthernet0/1/0
+ description Internet
+ ip address 203.0.113.40 255.255.255.248
+ crypto map CMAP-LEGACY
+!
+interface TenGigabitEthernet0/1/1
+ description Core
+ ip address 198.51.100.249 255.255.255.252
+!
+interface GigabitEthernet0/0/0
+ no ip address
+ shutdown
+!
+interface Virtual-Template1
+ ip unnumbered Loopback0
+ peer default ip address pool POOL-L2TP
+ ppp authentication chap
+!
+ip local pool POOL-L2TP 198.51.100.200 198.51.100.230
+no ip http server
+no ip http secure-server
+ip forward-protocol nd
+ip route 0.0.0.0 0.0.0.0 203.0.113.41
+ip ssh version 2
+!
+ip access-list extended ACL-VPN-LEGACY
+ 10 permit ip 198.51.100.0 0.0.0.127 198.51.100.192 0.0.0.15
+!
+snmp-server group V3-RO v3 priv
+snmp-server user nms-poller V3-RO v3 auth sha EXAMPLE-AUTH-NOT-REAL priv aes 128 EXAMPLE-PRIV-NOT-REAL
+snmp-server location Example DC
+!
+control-plane
+!
+line con 0
+ stopbits 1
+line vty 0 4
+ transport input ssh
+!
+ntp server 192.0.2.123
+!
+end

@@ -1,0 +1,33 @@
+schema_version: 1
+id: ikev1
+advisory_id: cisco-sa-iosxe-ikev1-dos-XHk3HzFC
+cves:
+- CVE-2025-20192
+title: Cisco IOS XE Software Internet Key Exchange Version 1 Denial of Service Vulnerability
+status: draft
+os: ios-xe
+summary: A device is vulnerable if it runs Cisco IOS XE Software on certain platforms and has IKEv1 VPN
+  enabled. The configuration indicates active use of IKEv1 without an associated IKEv2 Profile.
+exposure:
+  block:
+    parent: ^crypto map
+    has:
+    - (?P<profile>\s*profile \S+ (if no IKEv2 profile is listed))
+    lacks: []
+    where:
+      line:
+        pattern: ^interface \S+$
+affected_platforms:
+- ^ISR1000\d
+- ^ISR4000\d
+- ^C8200\d
+- ^C8300\d
+- ^C8500\d
+- ^C8500L\d
+runtime_checks:
+- command: show ip socket | include 500
+  description: Checks if UDP port 500 is open, indicating IKE processing.
+- command: show udp | include 500
+  description: Lists listening sockets on UDP port 500 or 4500, which are used by IKEv1 and IKEv2 respectively.
+- command: show crypto map
+  description: Determines if any active crypto maps use IKEv1 without an associated IKEv2 Profile.

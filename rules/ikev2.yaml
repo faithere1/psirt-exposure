@@ -1,0 +1,29 @@
+id: ikev2
+advisory_id: cisco-sa-asa-ftd-ios-dos-kPEpQGGK
+cves: [CVE-2026-20012]
+title: Cisco IOS, IOS XE, Secure Firewall Adaptive Security Appliance, and Secure Firewall Threat Defense Software IKEv2 Denial of Service Vulnerability
+status: reviewed
+summary: >-
+  IKEv2 is in use: a crypto map with an IKEv2 profile is applied to an interface, or an IPsec
+  profile with an IKEv2 profile is used by "tunnel protection" (FlexVPN, S2S VTI).
+exposure:
+  any_of:
+    - block:
+        parent: '^crypto map (?P<map>\S+) \d+ ipsec-isakmp$'
+        has: ['^set ikev2-profile \S+']
+        where:
+          block:
+            parent: '^interface '
+            has: ['^crypto map {map}$']
+    - block:
+        parent: '^crypto ipsec profile (?P<profile>\S+)$'
+        has: ['^set ikev2-profile \S+']
+        where:
+          block:
+            parent: '^interface '
+            has: ['^tunnel protection ipsec profile {profile}\b']
+runtime_checks:
+  - command: show udp | include 500
+    description: UDP 500 or 4500 must be listening; empty output means not affected.
+  - command: show crypto map
+    description: A map that shows "IKEv2 Profile" and lists an interface uses IKEv2.

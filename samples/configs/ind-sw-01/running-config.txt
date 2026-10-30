@@ -1,0 +1,82 @@
+Building configuration...
+
+Current configuration : 2388 bytes
+!
+! Last configuration change at 08:05:57 UTC Tue Oct 7 2026 by netadmin
+!
+version 17.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service call-home
+no platform punt-keepalive disable-kernel-core
+!
+hostname ind-sw-01
+!
+enable secret 9 $9$EXAMPLEONLY$NotARealHashForTestingOnly0000000000000011
+!
+no aaa new-model
+!
+ip domain name example.net
+!
+license boot level network-essentials
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+username netadmin privilege 15 secret 9 $9$EXAMPLEONLY$NotARealHashForTestingOnly0000000000000012
+!
+vlan 50
+ name PLC
+!
+interface GigabitEthernet1/1
+ switchport access vlan 50
+ switchport mode access
+!
+interface GigabitEthernet1/2
+ switchport access vlan 50
+ switchport mode access
+!
+interface GigabitEthernet1/10
+ description Uplink
+ switchport mode trunk
+!
+interface AppGigabitEthernet1/1
+ switchport mode trunk
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan50
+ ip address 198.51.100.161 255.255.255.224
+ cip enable
+!
+iox
+!
+ip default-gateway 198.51.100.190
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+ip ssh version 2
+!
+ip access-list standard ACL-SNMP
+ 10 permit 192.0.2.50
+!
+snmp-server view NO_BAD_SNMP iso included
+snmp-server view NO_BAD_SNMP snmpUsmMIB excluded
+snmp-server view NO_BAD_SNMP snmpVacmMIB excluded
+snmp-server view NO_BAD_SNMP snmpCommunityMIB excluded
+snmp-server view NO_BAD_SNMP cafSessionMethodsInfoEntry excluded
+snmp-server community EXAMPLE-RO view NO_BAD_SNMP RO ACL-SNMP
+snmp-server location Example Plant Line 3
+!
+line con 0
+ stopbits 1
+line vty 0 15
+ login local
+ transport input ssh
+!
+ntp server 192.0.2.123
+!
+end

@@ -1,0 +1,22 @@
+id: iox
+advisory_id: cisco-sa-iox-dos-95Fqnf7b
+cves: [CVE-2025-20196]
+title: Cisco IOx Application Hosting Environment Denial of Service Vulnerability
+status: reviewed
+summary: >-
+  The IOx application hosting environment is enabled ("iox") and the HTTP server is enabled
+  ("ip http server" or "ip http secure-server"). Either condition alone is not enough.
+exposure:
+  all_of:
+    - line: {pattern: '^iox$'}
+    - any_of:
+        - line: {pattern: '^ip http server$'}
+        - line: {pattern: '^ip http secure-server$'}
+runtime_checks:
+  - command: show iox-service
+    description: '"IOx service (CAF) : Running" confirms IOx is active.'
+remediation:
+  description: >-
+    If no applications are hosted, disable IOx (or disable the HTTP server instead).
+  snippet: |-
+    no iox

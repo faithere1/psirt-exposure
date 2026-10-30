@@ -1,0 +1,19 @@
+id: cip
+advisory_id: cisco-sa-iosxe-cip-dos-9rTbKLt9
+cves: [CVE-2022-20919]
+title: Cisco IOS and IOS XE Software Common Industrial Protocol Request Denial of Service Vulnerability
+status: reviewed
+summary: The Common Industrial Protocol is enabled with "cip enable" on at least one interface.
+exposure:
+  block:
+    parent: '^interface '
+    has: ['^cip enable$']
+runtime_checks:
+  - command: show cip status
+    description: '"State : Enabled" confirms exposure; no output or an error means not affected.'
+remediation:
+  description: >-
+    Disable CIP on every interface that does not need it.
+  snippet: |-
+    interface <interface>
+     no cip enable

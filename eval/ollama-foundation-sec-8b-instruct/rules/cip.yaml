@@ -1,0 +1,20 @@
+schema_version: 1
+id: cip
+advisory_id: cisco-sa-iosxe-cip-dos-9rTbKLt9
+cves:
+- CVE-2022-20919
+title: Cisco IOS and IOS XE Software Common Industrial Protocol Request Denial of Service Vulnerability
+status: draft
+os: ios-xe
+summary: A denial of service (DoS) vulnerability in Cisco IOS and IOS XE Software when processing malformed
+  Common Industrial Protocol (CIP) packets. The device may reload unexpectedly if the CIP protocol is
+  enabled.
+exposure:
+  line:
+    pattern: ^show cip status$
+affected_platforms:
+- Cisco IOS
+- Cisco IOS XE
+runtime_checks:
+- command: show cip status
+  description: Checks if CIP is enabled on the device.

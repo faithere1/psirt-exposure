@@ -1,0 +1,32 @@
+id: ikev1
+advisory_id: cisco-sa-iosxe-ikev1-dos-XHk3HzFC
+cves: [CVE-2025-20192]
+title: Cisco IOS XE Software Internet Key Exchange Version 1 Denial of Service Vulnerability
+status: reviewed
+summary: >-
+  IKEv1 is in use: a crypto map without an IKEv2 profile is applied to an interface, or an IPsec
+  profile without an IKEv2 profile is used by "tunnel protection" (DMVPN, S2S VTI). Only the
+  listed hardware platforms are affected.
+exposure:
+  any_of:
+    - block:
+        parent: '^crypto map (?P<map>\S+) \d+ ipsec-isakmp$'
+        lacks: ['^set ikev2-profile ']
+        where:
+          block:
+            parent: '^interface '
+            has: ['^crypto map {map}$']
+    - block:
+        parent: '^crypto ipsec profile (?P<profile>\S+)$'
+        lacks: ['^set ikev2-profile ']
+        where:
+          block:
+            parent: '^interface '
+            has: ['^tunnel protection ipsec profile {profile}\b']
+# 1000 Series ISRs, 4000 Series ISRs, Catalyst 8200, 8300, 8500 and 8500L.
+affected_platforms: ['^C11\d\d', '^ISR4\d{3}', '^C82\d\d', '^C83\d\d', '^C85\d\d']
+runtime_checks:
+  - command: show udp | include 500
+    description: UDP 500 or 4500 must be listening; empty output means not affected.
+  - command: show crypto map
+    description: A map without "IKEv2 Profile" that lists an interface uses IKEv1.

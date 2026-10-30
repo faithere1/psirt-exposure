@@ -1,0 +1,128 @@
+Building configuration...
+
+Current configuration : 3412 bytes
+!
+! Last configuration change at 09:12:44 UTC Mon Sep 1 2026 by netadmin
+!
+version 17.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+platform qfp utilization monitor load 80
+platform punt-keepalive disable-kernel-core
+!
+hostname edge-rtr-01
+!
+boot-start-marker
+boot-end-marker
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+!
+logging buffered 64000 informational
+enable secret 9 $9$EXAMPLEONLY$NotARealHashForTestingOnly0000000000000000
+!
+no aaa new-model
+!
+ip domain name example.net
+!
+login on-success log
+!
+subscriber templating
+!
+crypto pki trustpoint TP-self-signed-0000000001
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-0000000001
+ revocation-check none
+!
+license udi pid C8300-1N1S-6T sn FDOFAKE0001
+memory free low-watermark processor 68484
+!
+username netadmin privilege 15 secret 9 $9$EXAMPLEONLY$NotARealHashForTestingOnly0000000000000001
+!
+redundancy
+!
+crypto ikev2 proposal PROP-AES256
+ encryption aes-cbc-256
+ integrity sha256
+ group 19
+!
+crypto ikev2 policy POL-AES256
+ proposal PROP-AES256
+!
+crypto ikev2 keyring KR-SITE-B
+ peer SITE-B
+  address 203.0.113.20
+  pre-shared-key EXAMPLE-PSK-NOT-REAL
+ !
+!
+crypto ikev2 profile IKEV2-SITE-B
+ match identity remote address 203.0.113.20 255.255.255.255
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local KR-SITE-B
+!
+crypto ipsec transform-set TS-AES256 esp-aes 256 esp-sha256-hmac
+ mode tunnel
+!
+crypto map CMAP-WAN 10 ipsec-isakmp
+ set peer 203.0.113.20
+ set transform-set TS-AES256
+ set ikev2-profile IKEV2-SITE-B
+ match address ACL-VPN-SITE-B
+!
+interface GigabitEthernet0/0/0
+ description WAN uplink
+ ip address 203.0.113.2 255.255.255.252
+ ip nat outside
+ negotiation auto
+ crypto map CMAP-WAN
+!
+interface GigabitEthernet0/0/1
+ description LAN
+ ip address 198.51.100.1 255.255.255.192
+ ip nat inside
+ negotiation auto
+!
+interface GigabitEthernet0/0/2
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ ip address 192.0.2.11 255.255.255.0
+ negotiation auto
+!
+ip http server
+ip http authentication local
+ip http secure-server
+ip forward-protocol nd
+!
+ip nat inside source list ACL-NAT interface GigabitEthernet0/0/0 overload
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+ip ssh version 2
+!
+ip access-list extended ACL-NAT
+ 10 deny   ip 198.51.100.0 0.0.0.63 198.51.100.128 0.0.0.63
+ 20 permit ip 198.51.100.0 0.0.0.63 any
+ip access-list extended ACL-VPN-SITE-B
+ 10 permit ip 198.51.100.0 0.0.0.63 198.51.100.128 0.0.0.63
+!
+snmp-server community EXAMPLE-RO RO
+snmp-server location Example Site A
+snmp-server contact noc@example.net
+!
+control-plane
+!
+line con 0
+ stopbits 1
+line vty 0 4
+ login local
+ transport input ssh
+!
+ntp server 192.0.2.123
+!
+end

@@ -1,0 +1,87 @@
+# Local NetBox for netsec-check, trimmed from netbox-community/netbox-docker (release 5.1.1).
+# One Valkey instance serves both the task queue (db 0) and the cache (db 1); no worker is
+# needed because netsec-check only reads the REST API.
+#
+# Secrets come from the repository's .env (see .env.example), never from this file:
+#   docker compose --env-file .env -f netbox/docker-compose.yml up -d
+# NetBox then listens on http://127.0.0.1:8000 (first start takes a few minutes: migrations).
+name: netsec-netbox
+
+services:
+  netbox:
+    image: docker.io/netboxcommunity/netbox:${NETBOX_IMAGE_TAG:-v4.7-5.1.1}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    user: "netbox:root"
+    ports:
+      - "127.0.0.1:${NETBOX_PORT:-8000}:8080"
+    environment:
+      DB_HOST: postgres
+      DB_NAME: netbox
+      DB_USER: netbox
+      DB_PASSWORD: ${NETBOX_DB_PASSWORD:?set NETBOX_DB_PASSWORD in .env}
+      REDIS_HOST: redis
+      REDIS_DATABASE: "0"
+      REDIS_PASSWORD: ${NETBOX_REDIS_PASSWORD:?set NETBOX_REDIS_PASSWORD in .env}
+      REDIS_CACHE_HOST: redis
+      REDIS_CACHE_DATABASE: "1"
+      REDIS_CACHE_PASSWORD: ${NETBOX_REDIS_PASSWORD:?set NETBOX_REDIS_PASSWORD in .env}
+      SECRET_KEY: ${NETBOX_SECRET_KEY:?set NETBOX_SECRET_KEY in .env}
+      API_TOKEN_PEPPER_1: ${NETBOX_API_TOKEN_PEPPER:?set NETBOX_API_TOKEN_PEPPER in .env}
+      SKIP_SUPERUSER: "false"
+      SUPERUSER_NAME: admin
+      SUPERUSER_EMAIL: admin@example.com
+      SUPERUSER_PASSWORD: ${NETBOX_SUPERUSER_PASSWORD:?set NETBOX_SUPERUSER_PASSWORD in .env}
+      # v2 API token "nbt_<key>.<secret>"; NETBOX_TOKEN in .env must match.
+      SUPERUSER_API_KEY: ${NETBOX_API_KEY:?set NETBOX_API_KEY in .env}
+      SUPERUSER_API_TOKEN: ${NETBOX_API_SECRET:?set NETBOX_API_SECRET in .env}
+      METRICS_ENABLED: "false"
+      WEBHOOKS_ENABLED: "false"
+      RELEASE_CHECK_URL: ""
+    healthcheck:
+      test: /opt/netbox/health.sh
+      start_period: 300s
+      timeout: 3s
+      interval: 15s
+    volumes:
+      - netbox-media-files:/opt/netbox/netbox/media:rw
+
+  postgres:
+    image: docker.io/postgres:18-alpine
+    environment:
+      POSTGRES_DB: netbox
+      POSTGRES_USER: netbox
+      POSTGRES_PASSWORD: ${NETBOX_DB_PASSWORD:?set NETBOX_DB_PASSWORD in .env}
+    healthcheck:
+      test: pg_isready -q -t 2 -d $$POSTGRES_DB -U $$POSTGRES_USER
+      start_period: 20s
+      timeout: 30s
+      interval: 10s
+      retries: 5
+    volumes:
+      - netbox-postgres:/var/lib/postgresql
+
+  redis:
+    image: docker.io/valkey/valkey:9.1-alpine
+    command:
+      - sh
+      - -c
+      - valkey-server --appendonly yes --requirepass $$REDIS_PASSWORD
+    environment:
+      REDIS_PASSWORD: ${NETBOX_REDIS_PASSWORD:?set NETBOX_REDIS_PASSWORD in .env}
+    healthcheck:
+      test: '[ $$(valkey-cli --pass "$${REDIS_PASSWORD}" ping) = ''PONG'' ]'
+      start_period: 5s
+      timeout: 3s
+      interval: 1s
+      retries: 5
+    volumes:
+      - netbox-redis-data:/data
+
+volumes:
+  netbox-media-files:
+  netbox-postgres:
+  netbox-redis-data:

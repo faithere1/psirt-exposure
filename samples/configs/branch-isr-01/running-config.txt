@@ -1,0 +1,118 @@
+Building configuration...
+
+Current configuration : 2944 bytes
+!
+! Last configuration change at 07:45:31 UTC Thu Oct 2 2026 by netadmin
+!
+version 17.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+platform qfp utilization monitor load 80
+!
+hostname branch-isr-01
+!
+boot-start-marker
+boot-end-marker
+!
+logging buffered 32000 informational
+enable secret 9 $9$EXAMPLEONLY$NotARealHashForTestingOnly0000000000000004
+!
+no aaa new-model
+!
+ip domain name example.net
+!
+ip dhcp snooping vlan 10,20
+ip dhcp snooping
+!
+license udi pid C1111-8P sn FGLFAKE0003
+!
+username netadmin privilege 15 secret 9 $9$EXAMPLEONLY$NotARealHashForTestingOnly0000000000000005
+!
+redundancy
+ mode none
+!
+vlan 10
+ name USERS
+!
+vlan 20
+ name VOICE
+!
+vlan 30
+ name CAMERAS
+!
+interface GigabitEthernet0/0/0
+ description WAN uplink
+ ip address 203.0.113.10 255.255.255.252
+ ip nat outside
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet0/1/0
+ switchport access vlan 10
+ switchport mode access
+!
+interface GigabitEthernet0/1/1
+ switchport access vlan 20
+ switchport mode access
+!
+interface GigabitEthernet0/1/2
+ switchport access vlan 30
+ switchport mode access
+!
+interface GigabitEthernet0/1/3
+ switchport mode trunk
+ ip dhcp snooping trust
+!
+interface Vlan10
+ ip address 198.51.100.1 255.255.255.224
+ ip nat inside
+!
+interface Vlan20
+ ip address 198.51.100.33 255.255.255.224
+ ip nat inside
+!
+interface Vlan30
+ ip address 198.51.100.65 255.255.255.224
+ ip nat inside
+!
+interface VirtualPortGroup0
+ description IOx app network
+ ip address 192.0.2.193 255.255.255.248
+ ip nat inside
+!
+iox
+!
+no ip http server
+ip http authentication local
+ip http secure-server
+ip forward-protocol nd
+!
+ip nat inside source list ACL-NAT interface GigabitEthernet0/0/0 overload
+ip route 0.0.0.0 0.0.0.0 203.0.113.9
+ip ssh version 2
+!
+ip access-list standard ACL-NAT
+ 10 permit 198.51.100.0 0.0.0.127
+ 20 permit 192.0.2.192 0.0.0.7
+!
+app-hosting appid sensor-agent
+ app-vnic gateway0 virtualportgroup 0 guest-interface 0
+  guest-ipaddress 192.0.2.194 netmask 255.255.255.248
+ app-default-gateway 192.0.2.193 guest-interface 0
+!
+control-plane
+!
+line con 0
+ stopbits 1
+line vty 0 4
+ login local
+ transport input ssh
+!
+ntp server 192.0.2.123
+!
+end

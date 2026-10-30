@@ -1,0 +1,571 @@
+{
+  "meta": {
+    "drafts": "eval/ollama-foundation-sec-8b-instruct/rules",
+    "backend": "ollama:foundation-sec-8b-instruct",
+    "devices": "8"
+  },
+  "summary": {
+    "rules": 10,
+    "valid": 8,
+    "exact_rules": 0,
+    "cells": 80,
+    "draft_correct": 48,
+    "hand_correct": 80,
+    "draft_agrees_hand": 48,
+    "positive_cells": 23,
+    "draft_positive_correct": 0,
+    "baseline_always_absent": 57
+  },
+  "rules": [
+    {
+      "key": "cip",
+      "valid": true,
+      "attempts": 1,
+      "cells": [
+        {
+          "device": "access-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "access-sw-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "branch-isr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "dc-vrtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "ind-sw-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "absent"
+        },
+        {
+          "device": "vpn-hub-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        }
+      ]
+    },
+    {
+      "key": "dhcp-snooping",
+      "valid": true,
+      "attempts": 1,
+      "cells": [
+        {
+          "device": "access-sw-01",
+          "label": "not_applicable_platform",
+          "hand": "not_applicable_platform",
+          "draft": "absent"
+        },
+        {
+          "device": "access-sw-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "branch-isr-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "absent"
+        },
+        {
+          "device": "dc-vrtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "ind-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "vpn-hub-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        }
+      ]
+    },
+    {
+      "key": "ikev1",
+      "valid": true,
+      "attempts": 2,
+      "cells": [
+        {
+          "device": "access-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "access-sw-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "branch-isr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "dc-vrtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-02",
+          "label": "present",
+          "hand": "present",
+          "draft": "absent"
+        },
+        {
+          "device": "ind-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "vpn-hub-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "absent"
+        }
+      ]
+    },
+    {
+      "key": "ikev2",
+      "valid": true,
+      "attempts": 1,
+      "cells": [
+        {
+          "device": "access-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "access-sw-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "branch-isr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "dc-vrtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "ind-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "vpn-hub-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "absent"
+        }
+      ]
+    },
+    {
+      "key": "iox",
+      "valid": true,
+      "attempts": 1,
+      "cells": [
+        {
+          "device": "access-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "access-sw-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "branch-isr-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "absent"
+        },
+        {
+          "device": "dc-vrtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "ind-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "vpn-hub-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        }
+      ]
+    },
+    {
+      "key": "l2tp",
+      "valid": true,
+      "attempts": 1,
+      "cells": [
+        {
+          "device": "access-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "access-sw-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "branch-isr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "dc-vrtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-02",
+          "label": "present",
+          "hand": "present",
+          "draft": "absent"
+        },
+        {
+          "device": "ind-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "vpn-hub-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "absent"
+        }
+      ]
+    },
+    {
+      "key": "nat-dns-alg",
+      "valid": true,
+      "attempts": 1,
+      "cells": [
+        {
+          "device": "access-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "access-sw-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "branch-isr-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "absent"
+        },
+        {
+          "device": "dc-vrtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-02",
+          "label": "mitigated",
+          "hand": "mitigated",
+          "draft": "absent"
+        },
+        {
+          "device": "ind-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "vpn-hub-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        }
+      ]
+    },
+    {
+      "key": "smart-install",
+      "valid": false,
+      "attempts": 3,
+      "cells": [
+        {
+          "device": "access-sw-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "no-rule"
+        },
+        {
+          "device": "access-sw-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "no-rule"
+        },
+        {
+          "device": "branch-isr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "no-rule"
+        },
+        {
+          "device": "dc-vrtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "no-rule"
+        },
+        {
+          "device": "edge-rtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "no-rule"
+        },
+        {
+          "device": "edge-rtr-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "no-rule"
+        },
+        {
+          "device": "ind-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "no-rule"
+        },
+        {
+          "device": "vpn-hub-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "no-rule"
+        }
+      ]
+    },
+    {
+      "key": "snmp",
+      "valid": false,
+      "attempts": 3,
+      "cells": [
+        {
+          "device": "access-sw-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "no-rule"
+        },
+        {
+          "device": "access-sw-02",
+          "label": "mitigated",
+          "hand": "mitigated",
+          "draft": "no-rule"
+        },
+        {
+          "device": "branch-isr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "no-rule"
+        },
+        {
+          "device": "dc-vrtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "no-rule"
+        },
+        {
+          "device": "edge-rtr-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "no-rule"
+        },
+        {
+          "device": "edge-rtr-02",
+          "label": "mitigated",
+          "hand": "mitigated",
+          "draft": "no-rule"
+        },
+        {
+          "device": "ind-sw-01",
+          "label": "mitigated",
+          "hand": "mitigated",
+          "draft": "no-rule"
+        },
+        {
+          "device": "vpn-hub-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "no-rule"
+        }
+      ]
+    },
+    {
+      "key": "webui",
+      "valid": true,
+      "attempts": 1,
+      "cells": [
+        {
+          "device": "access-sw-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "absent"
+        },
+        {
+          "device": "access-sw-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "branch-isr-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "absent"
+        },
+        {
+          "device": "dc-vrtr-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "edge-rtr-01",
+          "label": "present",
+          "hand": "present",
+          "draft": "not_applicable_platform"
+        },
+        {
+          "device": "edge-rtr-02",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "ind-sw-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        },
+        {
+          "device": "vpn-hub-01",
+          "label": "absent",
+          "hand": "absent",
+          "draft": "absent"
+        }
+      ]
+    }
+  ]
+}

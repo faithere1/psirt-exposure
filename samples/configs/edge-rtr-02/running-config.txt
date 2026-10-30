@@ -1,0 +1,126 @@
+Building configuration...
+
+Current configuration : 3687 bytes
+!
+! Last configuration change at 14:02:10 UTC Tue Aug 12 2026 by netadmin
+!
+version 17.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+platform qfp utilization monitor load 80
+!
+hostname edge-rtr-02
+!
+boot-start-marker
+boot-end-marker
+!
+logging buffered 64000 informational
+enable secret 9 $9$EXAMPLEONLY$NotARealHashForTestingOnly0000000000000002
+!
+aaa new-model
+aaa authentication login default local
+aaa authorization exec default local
+aaa session-id common
+!
+ip domain name example.net
+!
+license udi pid ISR4451-X/K9 sn FDOFAKE0002
+!
+username netadmin privilege 15 secret 9 $9$EXAMPLEONLY$NotARealHashForTestingOnly0000000000000003
+!
+redundancy
+ mode none
+!
+l2tp-class L2TP-CLASS-DC
+ hello 30
+!
+pseudowire-class PW-L2TPV3
+ encapsulation l2tpv3
+ protocol l2tpv3 L2TP-CLASS-DC
+ ip local interface Loopback0
+!
+crypto isakmp policy 10
+ encryption aes 256
+ hash sha256
+ authentication pre-share
+ group 14
+crypto isakmp key EXAMPLE-PSK-NOT-REAL address 0.0.0.0
+!
+crypto ipsec transform-set TS-DMVPN esp-aes 256 esp-sha256-hmac
+ mode transport
+!
+crypto ipsec profile IPSEC-DMVPN
+ set transform-set TS-DMVPN
+!
+interface Loopback0
+ ip address 192.0.2.2 255.255.255.255
+!
+interface Tunnel100
+ description DMVPN spoke
+ ip address 198.51.100.130 255.255.255.192
+ no ip redirects
+ ip mtu 1400
+ ip nhrp network-id 100
+ ip nhrp nhs 198.51.100.129 nbma 203.0.113.40 multicast
+ ip tcp adjust-mss 1360
+ tunnel source GigabitEthernet0/0/0
+ tunnel mode gre multipoint
+ tunnel protection ipsec profile IPSEC-DMVPN
+!
+interface GigabitEthernet0/0/0
+ description WAN uplink
+ ip address 203.0.113.6 255.255.255.252
+ ip nat outside
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ description LAN
+ ip address 198.51.100.65 255.255.255.192
+ ip nat inside
+ negotiation auto
+!
+interface GigabitEthernet0/0/2
+ description L2TPv3 xconnect to DC
+ no ip address
+ negotiation auto
+ xconnect 192.0.2.250 200 encapsulation l2tpv3 pw-class PW-L2TPV3
+!
+interface GigabitEthernet0/0/3
+ no ip address
+ shutdown
+ negotiation auto
+!
+no ip http server
+no ip http secure-server
+ip forward-protocol nd
+!
+ip nat inside source list ACL-NAT interface GigabitEthernet0/0/0 overload
+no ip nat service dns tcp
+no ip nat service dns udp
+ip route 0.0.0.0 0.0.0.0 203.0.113.5
+ip ssh version 2
+!
+ip access-list standard ACL-NAT
+ 10 permit 198.51.100.64 0.0.0.63
+ip access-list standard ACL-SNMP
+ 10 permit 192.0.2.50
+!
+snmp-server view NO_BAD_SNMP iso included
+snmp-server view NO_BAD_SNMP snmpUsmMIB excluded
+snmp-server view NO_BAD_SNMP snmpVacmMIB excluded
+snmp-server view NO_BAD_SNMP snmpCommunityMIB excluded
+snmp-server view NO_BAD_SNMP cafSessionMethodsInfoEntry excluded
+snmp-server community EXAMPLE-RO view NO_BAD_SNMP RO ACL-SNMP
+snmp-server location Example Site B
+!
+control-plane
+!
+line con 0
+ stopbits 1
+line vty 0 4
+ transport input ssh
+!
+ntp server 192.0.2.123
+!
+end

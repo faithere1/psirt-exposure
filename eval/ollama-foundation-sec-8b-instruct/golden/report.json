@@ -1,0 +1,876 @@
+{
+  "meta": {
+    "cases": "eval/golden/cases.yaml",
+    "rules": "eval/ollama-foundation-sec-8b-instruct/rules",
+    "versions": "csaf (offline)"
+  },
+  "metrics": {
+    "cases": 60,
+    "devices": 6,
+    "rules": 10,
+    "verdict_correct": 32,
+    "verdict_accuracy": 0.5333,
+    "exposure_correct": 29,
+    "exposure_accuracy": 0.4833,
+    "affected_precision": null,
+    "affected_recall": 0.0,
+    "per_verdict": {
+      "AFFECTED": {
+        "support": 10,
+        "predicted": 0,
+        "precision": null,
+        "recall": 0.0,
+        "f1": null
+      },
+      "NOT_AFFECTED_FEATURE_DISABLED": {
+        "support": 38,
+        "predicted": 47,
+        "precision": 0.6596,
+        "recall": 0.8158,
+        "f1": 0.7294
+      },
+      "FIXED_VERSION": {
+        "support": 5,
+        "predicted": 0,
+        "precision": null,
+        "recall": 0.0,
+        "f1": null
+      },
+      "MITIGATED": {
+        "support": 4,
+        "predicted": 0,
+        "precision": null,
+        "recall": 0.0,
+        "f1": null
+      },
+      "INDETERMINATE": {
+        "support": 3,
+        "predicted": 1,
+        "precision": 1.0,
+        "recall": 0.3333,
+        "f1": 0.5
+      }
+    },
+    "per_rule": {
+      "cip": {
+        "cases": 6,
+        "correct": 5
+      },
+      "dhcp-snooping": {
+        "cases": 6,
+        "correct": 6
+      },
+      "ikev1": {
+        "cases": 6,
+        "correct": 5
+      },
+      "ikev2": {
+        "cases": 6,
+        "correct": 4
+      },
+      "iox": {
+        "cases": 6,
+        "correct": 4
+      },
+      "l2tp": {
+        "cases": 6,
+        "correct": 3
+      },
+      "nat-dns-alg": {
+        "cases": 6,
+        "correct": 3
+      },
+      "smart-install": {
+        "cases": 6,
+        "correct": 0
+      },
+      "snmp": {
+        "cases": 6,
+        "correct": 0
+      },
+      "webui": {
+        "cases": 6,
+        "correct": 2
+      }
+    },
+    "confusion": [
+      {
+        "expected": "AFFECTED",
+        "predicted": "NOT_AFFECTED_FEATURE_DISABLED",
+        "count": 8
+      },
+      {
+        "expected": "AFFECTED",
+        "predicted": "no-rule",
+        "count": 2
+      },
+      {
+        "expected": "FIXED_VERSION",
+        "predicted": "NOT_AFFECTED_FEATURE_DISABLED",
+        "count": 4
+      },
+      {
+        "expected": "FIXED_VERSION",
+        "predicted": "no-rule",
+        "count": 1
+      },
+      {
+        "expected": "INDETERMINATE",
+        "predicted": "INDETERMINATE",
+        "count": 1
+      },
+      {
+        "expected": "INDETERMINATE",
+        "predicted": "NOT_AFFECTED_FEATURE_DISABLED",
+        "count": 1
+      },
+      {
+        "expected": "INDETERMINATE",
+        "predicted": "no-rule",
+        "count": 1
+      },
+      {
+        "expected": "MITIGATED",
+        "predicted": "NOT_AFFECTED_FEATURE_DISABLED",
+        "count": 3
+      },
+      {
+        "expected": "MITIGATED",
+        "predicted": "no-rule",
+        "count": 1
+      },
+      {
+        "expected": "NOT_AFFECTED_FEATURE_DISABLED",
+        "predicted": "NOT_AFFECTED_FEATURE_DISABLED",
+        "count": 31
+      },
+      {
+        "expected": "NOT_AFFECTED_FEATURE_DISABLED",
+        "predicted": "no-rule",
+        "count": 7
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "gold-edge-01/webui",
+      "expected": {
+        "exposure": "mitigated",
+        "verdict": "MITIGATED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-edge-01/smart-install",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "no-rule",
+        "verdict": "no-rule"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-edge-01/snmp",
+      "expected": {
+        "exposure": "present",
+        "verdict": "AFFECTED"
+      },
+      "predicted": {
+        "exposure": "no-rule",
+        "verdict": "no-rule"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-edge-01/cip",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-edge-01/ikev1",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-edge-01/ikev2",
+      "expected": {
+        "exposure": "present",
+        "verdict": "AFFECTED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-edge-01/iox",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-edge-01/l2tp",
+      "expected": {
+        "exposure": "present",
+        "verdict": "FIXED_VERSION"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-edge-01/nat-dns-alg",
+      "expected": {
+        "exposure": "present",
+        "verdict": "FIXED_VERSION"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-edge-01/dhcp-snooping",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-isr-02/webui",
+      "expected": {
+        "exposure": "present",
+        "verdict": "AFFECTED"
+      },
+      "predicted": {
+        "exposure": "not_applicable_platform",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-isr-02/smart-install",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "no-rule",
+        "verdict": "no-rule"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-isr-02/snmp",
+      "expected": {
+        "exposure": "present",
+        "verdict": "AFFECTED"
+      },
+      "predicted": {
+        "exposure": "no-rule",
+        "verdict": "no-rule"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-isr-02/cip",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-isr-02/ikev1",
+      "expected": {
+        "exposure": "present",
+        "verdict": "AFFECTED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-isr-02/ikev2",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-isr-02/iox",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-isr-02/l2tp",
+      "expected": {
+        "exposure": "present",
+        "verdict": "AFFECTED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-isr-02/nat-dns-alg",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-isr-02/dhcp-snooping",
+      "expected": {
+        "exposure": "not_applicable_platform",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-sw-01/webui",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-sw-01/smart-install",
+      "expected": {
+        "exposure": "present",
+        "verdict": "FIXED_VERSION"
+      },
+      "predicted": {
+        "exposure": "no-rule",
+        "verdict": "no-rule"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-sw-01/snmp",
+      "expected": {
+        "exposure": "mitigated",
+        "verdict": "MITIGATED"
+      },
+      "predicted": {
+        "exposure": "no-rule",
+        "verdict": "no-rule"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-sw-01/cip",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-sw-01/ikev1",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-sw-01/ikev2",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-sw-01/iox",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-sw-01/l2tp",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-sw-01/nat-dns-alg",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-sw-01/dhcp-snooping",
+      "expected": {
+        "exposure": "not_applicable_platform",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-ie-01/webui",
+      "expected": {
+        "exposure": "present",
+        "verdict": "AFFECTED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-ie-01/smart-install",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "no-rule",
+        "verdict": "no-rule"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-ie-01/snmp",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "no-rule",
+        "verdict": "no-rule"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-ie-01/cip",
+      "expected": {
+        "exposure": "present",
+        "verdict": "FIXED_VERSION"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-ie-01/ikev1",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-ie-01/ikev2",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-ie-01/iox",
+      "expected": {
+        "exposure": "present",
+        "verdict": "AFFECTED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-ie-01/l2tp",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-ie-01/nat-dns-alg",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-ie-01/dhcp-snooping",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-vrtr-02/webui",
+      "expected": {
+        "exposure": "mitigated",
+        "verdict": "MITIGATED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-vrtr-02/smart-install",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "no-rule",
+        "verdict": "no-rule"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-vrtr-02/snmp",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "no-rule",
+        "verdict": "no-rule"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-vrtr-02/cip",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-vrtr-02/ikev1",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-vrtr-02/ikev2",
+      "expected": {
+        "exposure": "present",
+        "verdict": "AFFECTED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-vrtr-02/iox",
+      "expected": {
+        "exposure": "present",
+        "verdict": "AFFECTED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-vrtr-02/l2tp",
+      "expected": {
+        "exposure": "present",
+        "verdict": "FIXED_VERSION"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-vrtr-02/nat-dns-alg",
+      "expected": {
+        "exposure": "mitigated",
+        "verdict": "MITIGATED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-vrtr-02/dhcp-snooping",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-cfgonly-03/webui",
+      "expected": {
+        "exposure": "present",
+        "verdict": "INDETERMINATE"
+      },
+      "predicted": {
+        "exposure": null,
+        "verdict": "INDETERMINATE"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-cfgonly-03/smart-install",
+      "expected": {
+        "exposure": null,
+        "verdict": "INDETERMINATE"
+      },
+      "predicted": {
+        "exposure": "no-rule",
+        "verdict": "no-rule"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-cfgonly-03/snmp",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "no-rule",
+        "verdict": "no-rule"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-cfgonly-03/cip",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-cfgonly-03/ikev1",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-cfgonly-03/ikev2",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-cfgonly-03/iox",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-cfgonly-03/l2tp",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    },
+    {
+      "id": "gold-cfgonly-03/nat-dns-alg",
+      "expected": {
+        "exposure": "present",
+        "verdict": "INDETERMINATE"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": false
+    },
+    {
+      "id": "gold-cfgonly-03/dhcp-snooping",
+      "expected": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "predicted": {
+        "exposure": "absent",
+        "verdict": "NOT_AFFECTED_FEATURE_DISABLED"
+      },
+      "correct": true
+    }
+  ]
+}
