@@ -425,7 +425,8 @@
       "description": "A fact the config cannot show; reported so the operator can confirm it.",
       "properties": {
         "command": {
-          "minLength": 1,
+          "description": "An IOS XE 'show' command",
+          "pattern": "^show \\S",
           "title": "Command",
           "type": "string"
         },

@@ -214,14 +214,16 @@ Set `NETBOX_URL` and `NETBOX_TOKEN` in `.env`; v1 (`Token`) and v2 (`nbt_…`, `
 both work. Narrow the device query with `--netbox-filter KEY=VALUE` (any NetBox device filter,
 repeatable).
 
-A local lab with the sample devices (needs Docker, e.g. `brew install colima docker
-docker-compose && colima start`):
+A local lab with the sample devices (needs Docker and Compose, e.g. `brew install colima docker
+docker-compose && colima start`). The Homebrew package provides the `docker-compose` command used
+below; with Docker Desktop, write `docker compose` instead.
 
 ```bash
 uv run python -m psirt_exposure.netbox.secrets >> .env   # random lab passwords + API token
-docker compose --env-file .env -f netbox/docker-compose.yml up -d --wait
+docker-compose --env-file .env -f netbox/docker-compose.yml up -d --wait
 uv run psirt-exposure netbox-seed                         # idempotent
 uv run psirt-exposure check --offline --netbox --netbox-filter site=psirt-lab
+docker-compose --env-file .env -f netbox/docker-compose.yml down -v   # stop the lab and delete its data
 ```
 
 NetBox runs on http://127.0.0.1:8000 (user `admin`, password `NETBOX_SUPERUSER_PASSWORD`).

@@ -497,3 +497,17 @@ Status: ☐ not started · ◐ in progress · ☑ done
   pin `pip-audit` version; SEC-05 restrict `RuntimeCheck.command` to `^show ` (regenerate
   `rules/rule.schema.json`; check eval drafts still load); SEC-07 Valkey healthcheck via
   `REDISCLI_AUTH`. Then push (user wants to review before push).
+
+### External security review fixes — 2026-10-30 (completed)
+- Finished the resume point of the previous entry:
+  SEC-06 CI actions pinned to commit SHAs (`actions/checkout` v4 `11d5960a`, `astral-sh/setup-uv`
+  v5 `d4b2f3b6`; kept the majors CI already passed with), gitleaks 8.30.1 tarball verified with
+  `sha256sum --check` against the release checksum (also verified locally), `pip-audit@2.10.1`.
+  SEC-05 `RuntimeCheck.command` must match `^show \S` (all rules and eval drafts comply);
+  `rules/rule.schema.json` regenerated, so LLM output is constrained too.
+  SEC-07 Valkey healthcheck reads the password from `VALKEYCLI_AUTH` (checked in valkey-cli
+  source) instead of `--pass`; compose file renders with `docker-compose config`.
+- README: the NetBox lab uses `docker-compose` (what Homebrew installs; `docker compose` on Docker
+  Desktop) and documents `down -v` with `--env-file .env` (the compose file requires the vars).
+- Checks: ruff, format, mypy, pytest green (436 passed); golden 60/60.
+- All 7 review findings are now addressed. Not pushed yet (`eae06d8` and this commit).

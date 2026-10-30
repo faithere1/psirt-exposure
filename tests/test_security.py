@@ -6,12 +6,14 @@ from pathlib import Path
 
 import httpx
 import pytest
+from pydantic import ValidationError
 
 from psirt_exposure.matcher import parse_vlan_list
 from psirt_exposure.netbox import NetBoxError
 from psirt_exposure.netbox.client import NetBoxClient
 from psirt_exposure.redact import MASK, redact
 from psirt_exposure.rules.loader import load_rules
+from psirt_exposure.rules.model import RuntimeCheck
 
 # Every value below is fake.
 LEAKS = [
@@ -110,3 +112,10 @@ def test_draft_rules_are_skipped_when_reviewed_only(tmp_path: Path) -> None:
     (tmp_path / "webui.yaml").write_text(src.replace("status: reviewed", "status: draft"))
     assert load_rules(tmp_path) != {}
     assert load_rules(tmp_path, reviewed_only=True) == {}
+
+
+@pytest.mark.parametrize("command", ["reload", "write erase", "configure terminal", "show"])
+def test_runtime_check_command_must_be_show(command: str) -> None:
+    with pytest.raises(ValidationError):
+        RuntimeCheck(command=command, description="x")
+    assert RuntimeCheck(command="show iox-service", description="x").command

@@ -3,7 +3,7 @@
 # needed because psirt-exposure only reads the REST API.
 #
 # Secrets come from the repository's .env (see .env.example), never from this file:
-#   docker compose --env-file .env -f netbox/docker-compose.yml up -d
+#   docker-compose --env-file .env -f netbox/docker-compose.yml up -d   (or: docker compose ...)
 # NetBox then listens on http://127.0.0.1:8000 (first start takes a few minutes: migrations).
 name: psirt-exposure-netbox
 
@@ -72,8 +72,10 @@ services:
       - valkey-server --appendonly yes --requirepass $$REDIS_PASSWORD
     environment:
       REDIS_PASSWORD: ${NETBOX_REDIS_PASSWORD:?set NETBOX_REDIS_PASSWORD in .env}
+      # valkey-cli reads the password from here, so it never appears in the process list.
+      VALKEYCLI_AUTH: ${NETBOX_REDIS_PASSWORD:?set NETBOX_REDIS_PASSWORD in .env}
     healthcheck:
-      test: '[ $$(valkey-cli --pass "$${REDIS_PASSWORD}" ping) = ''PONG'' ]'
+      test: '[ $$(valkey-cli --no-auth-warning ping) = ''PONG'' ]'
       start_period: 5s
       timeout: 3s
       interval: 1s

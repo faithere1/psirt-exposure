@@ -312,7 +312,8 @@ class Remediation(_Strict):
 class RuntimeCheck(_Strict):
     """A fact the config cannot show; reported so the operator can confirm it."""
 
-    command: str = Field(min_length=1)
+    # Read-only on purpose: reports print this for an operator to run, and LLM drafts fill it.
+    command: str = Field(pattern=r"^show \S", description="An IOS XE 'show' command")
     description: str = Field(min_length=1)
 
 
